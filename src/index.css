@@ -125,3 +125,74 @@
 .animate-dynamic-island {
   animation: dynamicIslandExpand 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
+
+/* Globe & Salvation Glory Animations */
+@keyframes spinGlobeSlow {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes spinGlobeReverse {
+  0% { transform: rotate(360deg) rotateX(65deg); }
+  100% { transform: rotate(0deg) rotateX(65deg); }
+}
+
+@keyframes pulseAtmosphere {
+  0%, 100% {
+    box-shadow: 0 0 25px rgba(59, 130, 246, 0.3), inset 0 0 25px rgba(59, 130, 246, 0.3);
+    opacity: 0.8;
+  }
+  50% {
+    box-shadow: 0 0 55px rgba(59, 130, 246, 0.75), inset 0 0 40px rgba(234, 179, 8, 0.4);
+    opacity: 1;
+  }
+}
+
+@keyframes pulseGlowHover {
+  0%, 100% {
+    filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.8)) drop-shadow(0 0 35px rgba(234, 179, 8, 0.5));
+  }
+  50% {
+    filter: drop-shadow(0 0 35px rgba(99, 102, 241, 1)) drop-shadow(0 0 60px rgba(234, 179, 8, 0.8));
+  }
+}
+
+@keyframes floatScriptureCard {
+  0%, 100% { transform: translateY(0px) scale(1); }
+  50% { transform: translateY(-6px) scale(1.01); }
+}
+
+@keyframes shimmerGlory {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-spin-globe {
+  animation: spinGlobeSlow 28s linear infinite;
+}
+
+.animate-spin-globe-fast {
+  animation: spinGlobeSlow 12s linear infinite;
+}
+
+.animate-spin-reverse {
+  animation: spinGlobeReverse 35s linear infinite;
+}
+
+.animate-pulse-atmosphere {
+  animation: pulseAtmosphere 4s ease-in-out infinite;
+}
+
+.animate-float-scripture {
+  animation: floatScriptureCard 5s ease-in-out infinite;
+}
+
+.shimmer-text {
+  background: linear-gradient(90deg, #93C5FD 0%, #FFFFFF 50%, #FDE047 100%);
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: shimmerGlory 4s linear infinite;
+}
+

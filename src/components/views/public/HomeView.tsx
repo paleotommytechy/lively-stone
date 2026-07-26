@@ -1,6 +1,7 @@
 import React from 'react';
 import { useApp } from '../../../context/AppContext';
 import { IOSCard } from '../../ios/IOSCard';
+import { GlobeAnimation } from './GlobeAnimation';
 import { 
   ArrowRight, 
   BookOpen, 
@@ -38,40 +39,50 @@ export const HomeView: React.FC = () => {
     <div className="space-y-12 pb-16 animate-ios-fade-in">
       
       {/* Hero Section */}
-      <section className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-zinc-950 via-[#0F172A] to-slate-900 text-white p-8 sm:p-12 lg:p-16 border border-white/10 shadow-2xl">
+      <section className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-zinc-950 via-[#0F172A] to-slate-900 text-white p-8 sm:p-12 lg:p-14 border border-white/10 shadow-2xl">
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#3B82F6]/20 rounded-full blur-3xl -z-0 pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-80 h-80 bg-indigo-600/15 rounded-full blur-3xl -z-0 pointer-events-none" />
 
-        <div className="relative z-10 max-w-3xl space-y-6">
-          {/* Badge without Icon as requested */}
-          <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-xl text-blue-200 text-xs font-bold shadow-sm tracking-wide">
-            Lively Stones International Network
+        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          
+          {/* Left Hand Side: Hero Content */}
+          <div className="lg:col-span-7 space-y-6">
+            {/* Badge */}
+            <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-xl text-blue-200 text-xs font-bold shadow-sm tracking-wide">
+              Lively Stones International Network
+            </div>
+
+            <h1 className="text-3xl sm:text-5xl lg:text-5xl xl:text-6xl font-extrabold tracking-tight leading-[1.1]">
+              Transforming Believers into <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-300 via-white to-amber-300">Territorial Disciples</span>
+            </h1>
+
+            <p className="text-zinc-300 text-base sm:text-lg leading-relaxed max-w-2xl font-normal">
+              Welcome to the <strong className="text-white font-semibold">School of Tyrannus</strong>, convened by <strong className="text-blue-300 font-semibold">Saint Abraham Babatunde</strong>. A digital environment created to help believers encounter God's truth, live out the Word, and become disciples who multiply.
+            </p>
+
+            <div className="flex flex-wrap items-center gap-4 pt-3">
+              <button
+                onClick={() => setPublicRoute('tyrannus')}
+                className="px-7 py-3.5 rounded-full bg-[#3B82F6] hover:bg-blue-600 text-white font-extrabold text-xs tracking-wider uppercase shadow-xl shadow-blue-500/25 flex items-center gap-2 transition-all ios-active"
+              >
+                Explore School of Tyrannus
+                <ArrowRight className="w-4 h-4" />
+              </button>
+              
+              <button
+                onClick={() => setRoleView('student')}
+                className="px-7 py-3.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold text-xs tracking-wider uppercase backdrop-blur-xl flex items-center gap-2 transition-all ios-active"
+              >
+                Enter Student Portal
+              </button>
+            </div>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1]">
-            Transforming Believers into <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-300 via-white to-blue-400">Territorial Disciples</span>
-          </h1>
-
-          <p className="text-zinc-300 text-base sm:text-lg leading-relaxed max-w-2xl font-normal">
-            Welcome to the <strong className="text-white font-semibold">School of Tyrannus</strong>, convened by <strong className="text-blue-300 font-semibold">Saint Abraham Babatunde</strong>. A digital environment created to help believers encounter God's truth, live out the Word, and become disciples who multiply.
-          </p>
-
-          <div className="flex flex-wrap items-center gap-4 pt-3">
-            <button
-              onClick={() => setPublicRoute('tyrannus')}
-              className="px-7 py-3.5 rounded-full bg-[#3B82F6] hover:bg-blue-600 text-white font-extrabold text-xs tracking-wider uppercase shadow-xl shadow-blue-500/25 flex items-center gap-2 transition-all ios-active"
-            >
-              Explore School of Tyrannus
-              <ArrowRight className="w-4 h-4" />
-            </button>
-            
-            <button
-              onClick={() => setRoleView('student')}
-              className="px-7 py-3.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold text-xs tracking-wider uppercase backdrop-blur-xl flex items-center gap-2 transition-all ios-active"
-            >
-              Enter Student Portal
-            </button>
+          {/* Right Hand Side: Desktop Interactive Rotating World Globe & Salvation Scriptures */}
+          <div className="lg:col-span-5 flex justify-center w-full">
+            <GlobeAnimation />
           </div>
+
         </div>
       </section>
 

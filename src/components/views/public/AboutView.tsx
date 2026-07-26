@@ -21,21 +21,23 @@ export const AboutView: React.FC = () => {
       {/* Convener Profile */}
       <IOSCard className="bg-gradient-to-br from-zinc-900 to-slate-950 text-white border-zinc-800 p-8 sm:p-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-          <img 
-            src="/AB.jpg" 
-            alt="Saint Abraham Babatunde" 
+          <img
+            src="/AB.jpg"
+            alt="Saint Abraham Babatunde"
             className="w-full h-80 object-cover rounded-2xl border border-zinc-700 shadow-2xl"
           />
           <div className="md:col-span-2 space-y-4">
             <span className="text-xs font-bold uppercase tracking-widest text-amber-400">
               Convener & Spiritual Leader
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">
               Saint Abraham Babatunde
             </h2>
-            <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+
+            <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed">
               Saint Abraham Babatunde convenes the School of Tyrannus with an unyielding mandate: to raise a generation of believers who are deeply rooted in the Scriptures, filled with the Holy Spirit, and actively establishing the Kingdom of God in their daily spheres.
             </p>
+
             <div className="pt-2 flex flex-wrap gap-2 text-xs font-semibold">
               <span className="px-3 py-1 rounded-full bg-zinc-800 text-amber-300 border border-zinc-700">
                 Apostolic Teaching
