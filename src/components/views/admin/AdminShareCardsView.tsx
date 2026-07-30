@@ -10,10 +10,10 @@ export const AdminShareCardsView: React.FC = () => {
     <div className="space-y-8 pb-16 animate-ios-fade-in">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-extrabold text-zinc-900 dark:text-white tracking-tight">
+          <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             Share Cards & Social Media Manager
           </h1>
-          <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400">
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
             Review and approve teaching insight templates for student social media sharing
           </p>
         </div>
@@ -23,7 +23,7 @@ export const AdminShareCardsView: React.FC = () => {
             setRoleView('student');
             setStudentRoute('share-cards');
           }}
-          className="px-5 py-2.5 rounded-full bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold text-xs shadow-md flex items-center gap-2"
+          className="px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-500 via-amber-400 to-orange-500 text-slate-950 font-extrabold text-xs shadow-lg shadow-amber-500/20 flex items-center gap-2 transition-all ios-active border border-amber-400/30"
         >
           <Plus className="w-4 h-4" />
           Open Card Studio
@@ -33,16 +33,16 @@ export const AdminShareCardsView: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         {shareCards.map((sc) => (
           <IOSCard key={sc.id} className="space-y-3">
-            <div className={`aspect-[4/5] rounded-2xl p-5 text-white bg-gradient-to-br ${sc.bgGradient} flex flex-col justify-between text-xs`}>
-              <p className="font-bold text-[10px] uppercase text-amber-300">{sc.headline}</p>
-              <p className="font-semibold line-clamp-4">"{sc.keyInsight}"</p>
-              <p className="text-[10px] text-zinc-400">{sc.scriptureRef}</p>
+            <div className={`aspect-[4/5] rounded-3xl p-5 text-white bg-gradient-to-br ${sc.bgGradient} flex flex-col justify-between text-xs shadow-xl border border-white/20 relative overflow-hidden backdrop-blur-xl`}>
+              <p className="font-bold text-[10px] uppercase font-mono text-amber-300 tracking-wider">{sc.headline}</p>
+              <p className="font-semibold line-clamp-4 leading-relaxed font-serif italic text-slate-100">"{sc.keyInsight}"</p>
+              <p className="text-[10px] font-mono text-cyan-300">{sc.scriptureRef}</p>
             </div>
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-emerald-500 font-bold flex items-center gap-1">
+            <div className="flex items-center justify-between text-xs font-mono">
+              <span className="text-emerald-500 dark:text-emerald-400 font-bold flex items-center gap-1">
                 <CheckCircle2 className="w-3.5 h-3.5" /> Approved
               </span>
-              <span className="text-zinc-400 font-medium">{sc.downloadsCount} Downloads</span>
+              <span className="text-slate-400 font-medium">{sc.downloadsCount} Downloads</span>
             </div>
           </IOSCard>
         ))}
@@ -50,3 +50,4 @@ export const AdminShareCardsView: React.FC = () => {
     </div>
   );
 };
+

@@ -208,7 +208,22 @@ export const GlobeAnimation: React.FC = () => {
     const centerY = height / 2;
     const tilt = (23.5 * Math.PI) / 180; // 23.5 deg Earth axial tilt
 
+    let isCanvasVisible = true;
+    const observer = new IntersectionObserver(([entry]) => {
+      isCanvasVisible = entry.isIntersecting;
+      if (entry.isIntersecting && !animationFrameRef.current) {
+        animationFrameRef.current = requestAnimationFrame(render);
+      }
+    }, { threshold: 0.1 });
+
+    observer.observe(canvas);
+
     const render = () => {
+      if (!isCanvasVisible) {
+        animationFrameRef.current = null;
+        return;
+      }
+
       ctx.clearRect(0, 0, width, height);
 
       // Speed up rotation when hovered
@@ -409,6 +424,7 @@ export const GlobeAnimation: React.FC = () => {
     render();
 
     return () => {
+      observer.disconnect();
       if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
     };
   }, [isHovered, selectedCountry]);
@@ -483,28 +499,21 @@ export const GlobeAnimation: React.FC = () => {
   return (
     <div className="relative flex flex-col items-center justify-center w-full min-h-[420px] select-none py-2">
 
-      {/* Dynamic Hover Pop-Up & Fade-Out Card for Saint Abraham Babatunde (AB.jpg) */}
-      <div
-        className={`absolute -top-10 sm:-top-14 right-0 z-30 transition-all duration-700 pointer-events-none transform ${abPopupState === 'visible'
-            ? 'opacity-100 translate-y-0 scale-100 shadow-[0_0_35px_rgba(245,158,11,0.5)]'
-            : abPopupState === 'fading'
-              ? 'opacity-0 -translate-y-2 scale-95 duration-1000'
-              : 'opacity-0 translate-y-4 scale-90 pointer-events-none'
-          }`}
-      >
-        <div className="flex items-center gap-3 p-2.5 rounded-2xl bg-slate-950/95 border-2 border-amber-400/80 backdrop-blur-xl shadow-2xl">
-          <img
-            src="/AB.jpg"
-            alt="Saint Abraham Babatunde"
-            className="w-14 h-14 rounded-xl object-cover border border-amber-300 shadow-md shrink-0"
+      {/* Convener Spotlight Overlay Banner */}
+      <div className={`transition-all duration-500 transform ${isHovered ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-90 -translate-y-1'}`}>
+        <div className="flex items-center gap-3 p-2.5 pr-4 rounded-full glass-pill border border-amber-400/40 text-white shadow-xl backdrop-blur-xl">
+          <img 
+            src="/AB.jpg" 
+            alt="Saint Abraham Babatunde" 
+            className="w-10 h-10 rounded-full object-cover shrink-0 ring-2 ring-amber-400/80 shadow-md"
           />
           <div className="pr-2 space-y-0.5">
-            <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 text-[9px] font-extrabold tracking-wider uppercase">
-              <Sparkles className="w-2.5 h-2.5" />
-              Convener Spotlight
+            <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 text-[9px] font-mono font-extrabold tracking-wider uppercase">
+              <Sparkles className="w-2.5 h-2.5 animate-spin-slow" />
+              CONVENER SPOTLIGHT
             </div>
             <h4 className="text-xs font-extrabold text-white">Saint Abraham Babatunde</h4>
-            <p className="text-[10px] text-blue-300 font-medium">School of Tyrannus Mandate</p>
+            <p className="text-[10px] text-cyan-300 font-medium">School of Tyrannus Mandate</p>
           </div>
         </div>
       </div>
@@ -518,16 +527,10 @@ export const GlobeAnimation: React.FC = () => {
         {/* Halo Glow Ring */}
         <div
           className={`absolute inset-0 rounded-full transition-all duration-700 pointer-events-none ${isHovered
-              ? 'bg-gradient-to-r from-blue-500/30 via-amber-400/25 to-indigo-600/40 blur-3xl scale-110'
-              : 'bg-gradient-to-r from-blue-600/20 to-indigo-500/15 blur-2xl'
+            ? 'bg-gradient-to-r from-blue-500/30 via-amber-400/30 to-indigo-600/40 blur-3xl scale-110'
+            : 'bg-gradient-to-r from-blue-600/20 to-indigo-500/15 blur-2xl'
             }`}
         />
-
-        {/* Global Salvation Badge Top Overlay */}
-        {/* <div className="absolute -top-3 px-3.5 py-1 rounded-full bg-slate-950/90 border border-amber-400/50 text-[10px] font-extrabold text-amber-300 flex items-center gap-1.5 shadow-xl backdrop-blur-md z-20">
-          <GlobeIcon className="w-3.5 h-3.5 text-blue-400 animate-spin-globe" />
-          <span className="tracking-widest uppercase">Realistic 3D Nations Map</span>
-        </div> */}
 
         {/* 3D Rendered Canvas */}
         <canvas
@@ -538,32 +541,32 @@ export const GlobeAnimation: React.FC = () => {
         />
 
         {/* Interactive Hover Hint Badge */}
-        <div className="absolute bottom-1 px-4 py-1 rounded-full bg-slate-950/90 border border-blue-400/40 text-white text-[10px] font-semibold shadow-xl backdrop-blur-xl flex items-center gap-2 z-20">
+        <div className="absolute bottom-1 px-4 py-1.5 rounded-full glass-pill border border-blue-400/40 text-white text-[10px] font-mono font-semibold shadow-xl backdrop-blur-xl flex items-center gap-2 z-20">
           <Flame className="w-3.5 h-3.5 text-amber-400 animate-bounce" />
-          <span>{isHovered ? "Click Country Pins to View Scriptures!" : "Hover for Convener & 3D Countries"}</span>
+          <span>{isHovered ? "CLICK PINS FOR SALVATION SCRIPTURES" : "HOVER & ROTATE GLOBE"}</span>
         </div>
       </div>
 
-      {/* Scripture Popup Modal / Card */}
+      {/* Scripture Popup Modal / Glass Card */}
       <div className={`mt-5 w-full max-w-md transition-all duration-500 transform ${showPopup ? 'scale-100 opacity-100 translate-y-0' : 'scale-98 opacity-95 translate-y-1'
         }`}>
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-950/95 via-slate-900/95 to-indigo-950/90 border border-amber-400/50 p-4 shadow-2xl backdrop-blur-2xl text-white space-y-2.5">
+        <div className="relative overflow-hidden rounded-3xl ios-glass-card border border-amber-400/50 p-5 shadow-2xl backdrop-blur-2xl text-white space-y-3">
 
           {/* Top Bar: Country & Scripture Reference */}
-          <div className="flex items-center justify-between border-b border-white/10 pb-2">
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-300 font-extrabold text-xs">
+          <div className="flex items-center justify-between border-b border-white/15 pb-2.5">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-300 font-extrabold text-xs shadow-inner">
                 <BookOpen className="w-4 h-4" />
               </div>
               <div>
-                <span className="text-[10px] font-extrabold text-amber-400 uppercase tracking-widest block">
+                <span className="text-[10px] font-mono font-extrabold text-amber-400 uppercase tracking-widest block">
                   {activeScripture.theme}
                 </span>
-                <div className="flex items-center gap-1.5 text-xs font-bold text-blue-200">
-                  <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
+                <div className="flex items-center gap-1.5 text-xs font-bold text-slate-100">
+                  <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
                   <span>{activeScripture.reference}</span>
                   {selectedCountry && (
-                    <span className="px-1.5 py-0.5 rounded bg-blue-500/20 border border-blue-400/30 text-[10px] text-amber-300 font-medium flex items-center gap-1">
+                    <span className="px-2 py-0.5 rounded-full bg-blue-500/20 border border-blue-400/30 text-[10px] text-amber-300 font-mono font-medium flex items-center gap-1">
                       <MapPin className="w-2.5 h-2.5" />
                       {selectedCountry.name}
                     </span>
@@ -575,17 +578,17 @@ export const GlobeAnimation: React.FC = () => {
             <div className="flex items-center gap-1">
               <button
                 onClick={handlePrev}
-                className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors"
+                className="p-1.5 rounded-xl glass-pill hover:bg-white/20 text-white transition-colors"
                 title="Previous Scripture"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
-              <span className="text-[10px] text-zinc-400 font-mono px-1">
+              <span className="text-[10px] text-slate-300 font-mono px-1">
                 {currentIndex + 1}/{SALVATION_SCRIPTURES.length}
               </span>
               <button
                 onClick={handleNext}
-                className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors"
+                className="p-1.5 rounded-xl glass-pill hover:bg-white/20 text-white transition-colors"
                 title="Next Scripture"
               >
                 <ChevronRight className="w-4 h-4" />
@@ -593,7 +596,7 @@ export const GlobeAnimation: React.FC = () => {
               {showPopup && (
                 <button
                   onClick={() => setShowPopup(false)}
-                  className="p-1 rounded-lg bg-red-500/20 hover:bg-red-500/40 text-red-300 transition-colors ml-1"
+                  className="p-1 rounded-xl bg-red-500/20 hover:bg-red-500/40 text-red-300 transition-colors ml-1"
                   title="Close popup"
                 >
                   <X className="w-4 h-4" />
@@ -603,21 +606,21 @@ export const GlobeAnimation: React.FC = () => {
           </div>
 
           {/* Scripture Verse Quote */}
-          <p className="text-xs sm:text-sm text-zinc-100 italic leading-relaxed font-serif pl-3 border-l-2 border-amber-400/80 py-0.5">
+          <p className="text-xs sm:text-sm text-slate-100 italic leading-relaxed font-serif pl-3 border-l-2 border-amber-400 py-0.5">
             "{activeScripture.text}"
           </p>
 
           {/* Footer details & Country Navigation */}
-          <div className="flex items-center justify-between text-[10px] text-zinc-400 pt-1 border-t border-white/5">
-            <span className="flex items-center gap-1 text-blue-300 font-medium">
-              <GlobeIcon className="w-3 h-3 text-amber-400" />
+          <div className="flex items-center justify-between text-[10px] text-slate-300 pt-2 border-t border-white/10">
+            <span className="flex items-center gap-1 text-cyan-300 font-medium">
+              <GlobeIcon className="w-3.5 h-3.5 text-amber-400" />
               {activeScripture.location} ({activeScripture.region})
             </span>
             <button
               onClick={handleNext}
-              className="text-[10px] font-bold text-amber-300 hover:text-amber-200 flex items-center gap-1 uppercase tracking-wider hover:underline"
+              className="text-[10px] font-mono font-bold text-amber-300 hover:text-amber-200 flex items-center gap-1 uppercase tracking-wider hover:underline"
             >
-              Next Scripture
+              NEXT SCRIPTURE
               <ChevronRight className="w-3 h-3" />
             </button>
           </div>

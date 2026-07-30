@@ -62,9 +62,9 @@ export const ShareCardGeneratorView: React.FC = () => {
       scriptureRef,
       speaker,
       bgGradient: selectedTemplate === 'editorial' 
-        ? 'from-slate-950 via-zinc-900 to-indigo-950' 
+        ? 'from-slate-950 via-slate-900 to-blue-950' 
         : selectedTemplate === 'scripture' 
-        ? 'from-amber-950 via-zinc-950 to-orange-950' 
+        ? 'from-amber-950 via-slate-950 to-orange-950' 
         : 'from-indigo-950 via-purple-950 to-slate-900'
     });
   };
@@ -74,14 +74,14 @@ export const ShareCardGeneratorView: React.FC = () => {
       
       {/* Header */}
       <div className="text-center max-w-3xl mx-auto space-y-3 pt-2">
-        <span className="px-3.5 py-1.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-bold border border-amber-500/20 inline-flex items-center gap-1.5">
-          <Share2 className="w-4 h-4 text-amber-500" />
-          Evangelism & Social Sharing Studio
+        <span className="px-4 py-1.5 rounded-full glass-pill text-amber-500 dark:text-amber-300 text-xs font-mono font-bold border border-amber-500/20 inline-flex items-center gap-1.5">
+          <Share2 className="w-4 h-4 text-amber-400" />
+          EVANGELISM & SOCIAL SHARING STUDIO
         </span>
-        <h1 className="text-3xl sm:text-5xl font-extrabold text-zinc-900 dark:text-white tracking-tight">
+        <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
           Shareable Teaching Insight Cards
         </h1>
-        <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400">
+        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
           Transform School of Tyrannus key points into elegant social graphics to expand the reach of the Word.
         </p>
       </div>
@@ -92,12 +92,13 @@ export const ShareCardGeneratorView: React.FC = () => {
         {/* Controls Column */}
         <div className="lg:col-span-6 space-y-6">
           <IOSCard className="space-y-4">
-            <h3 className="text-base font-bold text-zinc-900 dark:text-white flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-amber-500" />
+            <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-amber-400" />
               Card Studio Controls
             </h3>
 
             {/* Teaching Selector */}
+
             <div>
               <label className="block text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-1">
                 Select Teaching Source

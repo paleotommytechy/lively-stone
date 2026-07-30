@@ -32,7 +32,7 @@ export const IOSModal: React.FC<IOSModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-sm animate-ios-fade-in">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/70 backdrop-blur-md animate-ios-fade-in">
       {/* Backdrop overlay click */}
       <div className="absolute inset-0" onClick={onClose} />
 
@@ -40,33 +40,33 @@ export const IOSModal: React.FC<IOSModalProps> = ({
       <div 
         className={`
           relative w-full ${maxWidth} 
-          bg-white dark:bg-[#1C1C1E] 
-          rounded-t-[2.5rem] sm:rounded-3xl 
+          ios-glass-card
+          rounded-t-[2.5rem] sm:rounded-4xl 
           max-h-[90vh] overflow-y-auto no-scrollbar 
-          border border-zinc-200/80 dark:border-zinc-800/80 
+          border-t border-white/40 dark:border-white/20 
           shadow-2xl z-10 animate-ios-slide-up p-6 sm:p-8
         `}
       >
         {/* iOS Pull Handle Bar for Mobile */}
-        <div className="w-12 h-1.5 bg-zinc-300 dark:bg-zinc-700 rounded-full mx-auto mb-5 sm:hidden" />
+        <div className="w-12 h-1.5 bg-slate-400/40 dark:bg-slate-600/50 rounded-full mx-auto mb-5 sm:hidden" />
 
         {/* Header */}
-        <div className="flex items-start justify-between mb-6 pb-3 border-b border-zinc-100 dark:border-zinc-800">
+        <div className="flex items-start justify-between mb-6 pb-4 border-b border-white/20 dark:border-white/10">
           <div>
             {title && (
-              <h3 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white">
+              <h3 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
                 {title}
               </h3>
             )}
             {subtitle && (
-              <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400 mt-1">
+              <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1">
                 {subtitle}
               </p>
             )}
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 flex items-center justify-center text-zinc-500 dark:text-zinc-400 transition-colors"
+            className="w-8 h-8 rounded-full glass-pill hover:bg-white/80 dark:hover:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -78,3 +78,4 @@ export const IOSModal: React.FC<IOSModalProps> = ({
     </div>
   );
 };
+

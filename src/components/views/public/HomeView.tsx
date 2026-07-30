@@ -2,6 +2,7 @@ import React from 'react';
 import { useApp } from '../../../context/AppContext';
 import { IOSCard } from '../../ios/IOSCard';
 import { GlobeAnimation } from './GlobeAnimation';
+import { YouTubeShortPlayer } from './YouTubeShortPlayer';
 import { 
   ArrowRight, 
   BookOpen, 
@@ -12,7 +13,16 @@ import {
   HeartHandshake,
   Crown,
   Sparkles,
-  Flame
+  Flame,
+  ShieldCheck,
+  Zap,
+  GraduationCap,
+  Award,
+  CheckCircle2,
+  Users,
+  BarChart3,
+  MessageSquare,
+  Share2
 } from 'lucide-react';
 
 export const HomeView: React.FC = () => {
@@ -27,96 +37,179 @@ export const HomeView: React.FC = () => {
   } = useApp();
 
   const pillars = [
-    { name: 'Learn', desc: 'Encounter pure biblical doctrine and apostolic truth.', color: 'from-[#3B82F6] to-indigo-600', icon: <BookOpen className="w-5 h-5 text-white" /> },
-    { name: 'Grow', desc: 'Build deep spiritual endurance through prayer and fasting.', color: 'from-indigo-600 to-indigo-800', icon: <Sprout className="w-5 h-5 text-white" /> },
-    { name: 'Live', desc: 'Embody practical holiness in everyday decisions.', color: 'from-blue-600 to-indigo-700', icon: <Sparkles className="w-5 h-5 text-white" /> },
-    { name: 'Serve', desc: 'Deploy your gifts in secondary school and campus outreach.', color: 'from-indigo-500 to-blue-700', icon: <HeartHandshake className="w-5 h-5 text-white" /> },
-    { name: 'Disciple', desc: 'Walk intentionally with others in small fellowship groups.', color: 'from-[#3B82F6] to-blue-800', icon: <Flame className="w-5 h-5 text-white" /> },
-    { name: 'Multiply', desc: 'Raise faithful disciple makers who impact nations for Christ.', color: 'from-slate-800 to-[#3B82F6]', icon: <Crown className="w-5 h-5 text-white" /> },
+    { name: 'Learn', desc: 'Encounter pure biblical doctrine and apostolic truth.', color: 'from-blue-600 via-indigo-600 to-cyan-500', icon: <BookOpen className="w-5 h-5 text-white" /> },
+    { name: 'Grow', desc: 'Build deep spiritual endurance through prayer and fasting.', color: 'from-indigo-600 via-purple-600 to-blue-600', icon: <Sprout className="w-5 h-5 text-white" /> },
+    { name: 'Live', desc: 'Embody practical holiness in everyday decisions.', color: 'from-cyan-500 via-blue-600 to-indigo-600', icon: <Sparkles className="w-5 h-5 text-white" /> },
+    { name: 'Serve', desc: 'Deploy your gifts in secondary school and campus outreach.', color: 'from-indigo-500 via-blue-600 to-cyan-400', icon: <HeartHandshake className="w-5 h-5 text-white" /> },
+    { name: 'Disciple', desc: 'Walk intentionally with others in small fellowship groups.', color: 'from-blue-600 via-indigo-500 to-amber-500', icon: <Flame className="w-5 h-5 text-white" /> },
+    { name: 'Multiply', desc: 'Raise faithful disciple makers who impact nations for Christ.', color: 'from-amber-500 via-indigo-600 to-blue-700', icon: <Crown className="w-5 h-5 text-white" /> },
+  ];
+
+  const lmsFeatures = [
+    {
+      title: 'Structured Discipleship Pathways',
+      desc: 'Guide learners step-by-step through 6 distinct spiritual growth stages with milestone tracking.',
+      icon: <GraduationCap className="w-6 h-6 text-blue-400" />,
+      color: 'border-blue-500/30'
+    },
+    {
+      title: 'Interactive Assessment Engine',
+      desc: 'Instant quiz grading, pass score validation, and automated spiritual milestone awards.',
+      icon: <Award className="w-6 h-6 text-cyan-400" />,
+      color: 'border-cyan-500/30'
+    },
+    {
+      title: 'Community Q&A & Peer Desk',
+      desc: 'Direct interaction with Saint Abraham Babatunde & leadership for doctrine & life guidance.',
+      icon: <MessageSquare className="w-6 h-6 text-amber-400" />,
+      color: 'border-amber-500/30'
+    },
+    {
+      title: 'Evangelism Social Card Studio',
+      desc: 'Empower disciples to create & share beautifully formatted scripture insight graphics.',
+      icon: <Share2 className="w-6 h-6 text-indigo-400" />,
+      color: 'border-indigo-500/30'
+    }
   ];
 
   return (
     <div className="space-y-12 pb-16 animate-ios-fade-in">
       
-      {/* Hero Section */}
-      <section className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-zinc-950 via-[#0F172A] to-slate-900 text-white p-8 sm:p-12 lg:p-14 border border-white/10 shadow-2xl">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#3B82F6]/20 rounded-full blur-3xl -z-0 pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-indigo-600/15 rounded-full blur-3xl -z-0 pointer-events-none" />
+      {/* TalentLMS-Inspired Hero Section */}
+      <section className="relative overflow-hidden rounded-4xl bg-gradient-to-br from-slate-950/90 via-slate-900/90 to-blue-950/80 text-white p-8 sm:p-12 lg:p-14 border border-white/20 dark:border-white/10 shadow-2xl shadow-blue-500/10 backdrop-blur-2xl">
+        {/* Background Ambient Glows */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-cyan-500/20 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-[450px] h-[450px] bg-indigo-600/20 rounded-full blur-[130px] pointer-events-none" />
 
         <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           
           {/* Left Hand Side: Hero Content */}
           <div className="lg:col-span-7 space-y-6">
-            {/* Badge */}
-            <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-xl text-blue-200 text-xs font-bold shadow-sm tracking-wide">
-              Lively Stones International Network
+            {/* Holographic Pill */}
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-pill border border-white/30 text-cyan-300 text-xs font-mono font-bold shadow-md tracking-wider">
+              <Zap className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+              <span>APOSTOLIC LEARNING MANAGEMENT SYSTEM</span>
             </div>
 
             <h1 className="text-3xl sm:text-5xl lg:text-5xl xl:text-6xl font-extrabold tracking-tight leading-[1.1]">
-              Transforming Believers into <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-300 via-white to-amber-300">Territorial Disciples</span>
+              The Discipleship Platform Built for <span className="shimmer-text">Kingdom Multiplication</span>
             </h1>
 
-            <p className="text-zinc-300 text-base sm:text-lg leading-relaxed max-w-2xl font-normal">
-              Welcome to the <strong className="text-white font-semibold">School of Tyrannus</strong>, convened by <strong className="text-blue-300 font-semibold">Saint Abraham Babatunde</strong>. A digital environment created to help believers encounter God's truth, live out the Word, and become disciples who multiply.
+            <p className="text-slate-300 text-base sm:text-lg leading-relaxed max-w-2xl font-normal">
+              Welcome to the <strong className="text-white font-semibold">School of Tyrannus LMS</strong>, convened by <strong className="text-cyan-300 font-semibold">Saint Abraham Babatunde</strong>. A consecrated digital environment to equip believers through structured courses, interactive quizzes, and practical outreach.
             </p>
 
             <div className="flex flex-wrap items-center gap-4 pt-3">
               <button
                 onClick={() => setPublicRoute('tyrannus')}
-                className="px-7 py-3.5 rounded-full bg-[#3B82F6] hover:bg-blue-600 text-white font-extrabold text-xs tracking-wider uppercase shadow-xl shadow-blue-500/25 flex items-center gap-2 transition-all ios-active"
+                className="px-7 py-3.5 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-extrabold text-xs tracking-wider uppercase shadow-xl shadow-blue-500/30 flex items-center gap-2.5 transition-all ios-active border border-white/20"
               >
-                Explore School of Tyrannus
+                Explore LMS Courses
                 <ArrowRight className="w-4 h-4" />
               </button>
               
               <button
                 onClick={() => setRoleView('student')}
-                className="px-7 py-3.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold text-xs tracking-wider uppercase backdrop-blur-xl flex items-center gap-2 transition-all ios-active"
+                className="px-7 py-3.5 rounded-full glass-pill hover:bg-white/20 text-white font-bold text-xs tracking-wider uppercase backdrop-blur-xl flex items-center gap-2 transition-all ios-active border border-white/30 shadow-md"
               >
-                Enter Student Portal
+                Launch Student Portal
               </button>
             </div>
           </div>
 
-          {/* Right Hand Side: Desktop Interactive Rotating World Globe & Salvation Scriptures */}
+          {/* Right Hand Side: Desktop Interactive Rotating World Globe */}
           <div className="lg:col-span-5 flex justify-center w-full">
             <GlobeAnimation />
           </div>
 
+        </div>
+
+        {/* TalentLMS Stats Strip */}
+        <div className="mt-12 pt-8 border-t border-white/10 grid grid-cols-2 md:grid-cols-4 gap-6 text-center relative z-10 font-mono">
+          <div>
+            <p className="text-2xl sm:text-3xl font-extrabold text-cyan-300">1,200+</p>
+            <p className="text-xs text-slate-300 font-sans">Active Disciples</p>
+          </div>
+          <div>
+            <p className="text-2xl sm:text-3xl font-extrabold text-amber-300">6 Pillars</p>
+            <p className="text-xs text-slate-300 font-sans">Growth Roadmap</p>
+          </div>
+          <div>
+            <p className="text-2xl sm:text-3xl font-extrabold text-indigo-300">100% Free</p>
+            <p className="text-xs text-slate-300 font-sans">Apostolic Training</p>
+          </div>
+          <div>
+            <p className="text-2xl sm:text-3xl font-extrabold text-emerald-300">98%</p>
+            <p className="text-xs text-slate-300 font-sans">Session Consistency</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Video (Landscape 16:9, Local MP4, Scroll Auto-Play) */}
+      <YouTubeShortPlayer videoSrc="/video.mp4" />
+
+      {/* TalentLMS Core LMS Features Showcase */}
+      <section className="space-y-6">
+        <div className="text-center max-w-2xl mx-auto space-y-2">
+          <span className="px-4 py-1 rounded-full glass-pill text-blue-600 dark:text-blue-400 text-xs font-mono font-bold border border-blue-500/20">
+            LMS CAPABILITIES
+          </span>
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+            Designed for Intuitive Discipleship
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">
+            Everything you need to learn pure doctrine, track accountability, and multiply.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {lmsFeatures.map((feat) => (
+            <IOSCard key={feat.title} className={`space-y-3 border ${feat.color}`}>
+              <div className="w-12 h-12 rounded-2xl glass-pill flex items-center justify-center border border-white/20 shadow-md">
+                {feat.icon}
+              </div>
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                {feat.title}
+              </h3>
+              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
+                {feat.desc}
+              </p>
+            </IOSCard>
+          ))}
         </div>
       </section>
 
       {/* Discipleship Pathway Framework */}
       <section className="space-y-6">
         <div className="text-center max-w-2xl mx-auto space-y-2">
-          <span className="px-3.5 py-1 rounded-full bg-[#3B82F6]/10 text-[#3B82F6] dark:text-blue-400 text-xs font-bold border border-blue-500/20">
-            Apostolic Curriculum
+          <span className="px-4 py-1 rounded-full glass-pill text-blue-600 dark:text-blue-400 text-xs font-mono font-bold border border-blue-500/20">
+            APOSTOLIC CURRICULUM
           </span>
-          <h2 className="text-2xl sm:text-4xl font-extrabold text-[#0F172A] dark:text-white tracking-tight">
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             The 6 Pillars of Growth
           </h2>
-          <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400">
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">
             Learn • Grow • Live • Serve • Disciple • Multiply
           </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {pillars.map((p, idx) => (
-            <IOSCard key={p.name} className="relative overflow-hidden group">
+            <IOSCard key={p.name} className="relative overflow-hidden group hover:border-blue-400/50">
               <div className="flex items-center gap-4 mb-3">
-                <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${p.color} flex items-center justify-center shadow-lg shadow-black/10 shrink-0`}>
+                <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${p.color} flex items-center justify-center shadow-lg shadow-blue-500/20 shrink-0 group-hover:scale-110 transition-transform duration-300`}>
                   {p.icon}
                 </div>
                 <div>
-                  <span className="text-[10px] font-extrabold text-[#3B82F6] uppercase tracking-widest">
-                    Pillar 0{idx + 1}
+                  <span className="text-[10px] font-mono font-extrabold text-blue-500 dark:text-cyan-400 uppercase tracking-widest block">
+                    PILLAR 0{idx + 1}
                   </span>
-                  <h3 className="text-lg font-bold text-[#0F172A] dark:text-white">
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">
                     {p.name}
                   </h3>
                 </div>
               </div>
-              <p className="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed font-medium">
+              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
                 {p.desc}
               </p>
             </IOSCard>
@@ -125,34 +218,34 @@ export const HomeView: React.FC = () => {
       </section>
 
       {/* Convener Message Spotlight */}
-      <section className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-zinc-950 via-[#0F172A] to-slate-900 text-white p-8 sm:p-12 border border-zinc-800 shadow-2xl">
+      <section className="relative overflow-hidden rounded-4xl bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 text-white p-8 sm:p-12 border border-white/20 dark:border-white/10 shadow-2xl">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center relative z-10">
-          <div className="relative">
+          <div className="relative group">
             <img 
               src="/AB.jpg" 
               alt="Saint Abraham Babatunde" 
-              className="rounded-3xl shadow-2xl object-cover w-full h-80 border border-white/20"
+              className="rounded-3xl shadow-2xl object-cover w-full h-80 border border-white/20 group-hover:scale-[1.02] transition-transform duration-300 shrink-0"
             />
-            <div className="absolute bottom-3 left-3 right-3 p-3.5 rounded-2xl bg-black/80 backdrop-blur-xl border border-white/10 text-white text-xs">
-              <p className="font-extrabold text-sm">Saint Abraham Babatunde</p>
-              <p className="text-[11px] text-blue-300 font-semibold">Convener, Lively Stones Network</p>
+            <div className="absolute bottom-3 left-3 right-3 p-4 rounded-2xl glass-pill border border-white/30 text-white text-xs backdrop-blur-xl">
+              <p className="font-extrabold text-sm text-white">Saint Abraham Babatunde</p>
+              <p className="text-[11px] text-cyan-300 font-medium">Convener, Lively Stones Network</p>
             </div>
           </div>
 
           <div className="md:col-span-2 space-y-4">
-            <span className="px-3.5 py-1 rounded-full text-xs font-bold bg-[#3B82F6]/20 text-blue-300 border border-blue-500/30">
-              Apostolic Mandate
+            <span className="px-3.5 py-1 rounded-full text-xs font-mono font-bold glass-pill text-cyan-300 border border-cyan-500/30">
+              APOSTOLIC MANDATE
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight leading-snug">
               "We are not raising spectators. We are raising disciples built on daily biblical truth."
             </h2>
-            <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-normal">
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
               The School of Tyrannus is a consecrated space modeled after Paul's daily lecture hall in Ephesus. Our mandate is to ground believers in deep scripture, intimacy with God, and practical kingdom outreach across secondary schools and campuses.
             </p>
             <div className="pt-2 flex items-center gap-3">
               <button
                 onClick={() => setPublicRoute('about')}
-                className="px-6 py-2.5 rounded-full bg-white text-zinc-950 text-xs font-bold transition-all ios-active shadow-md"
+                className="px-6 py-2.5 rounded-full bg-white text-slate-950 text-xs font-extrabold transition-all ios-active shadow-lg hover:bg-slate-100"
               >
                 Read Full Vision
               </button>
@@ -165,16 +258,16 @@ export const HomeView: React.FC = () => {
       <section className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-[#0F172A] dark:text-white tracking-tight">
-              Recent Teachings
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
+              Featured LMS Courses
             </h2>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               School of Tyrannus lecture series by Saint Abraham Babatunde
             </p>
           </div>
           <button
             onClick={() => setPublicRoute('teachings')}
-            className="text-xs font-bold text-[#3B82F6] flex items-center gap-1 hover:underline"
+            className="text-xs font-bold text-blue-600 dark:text-blue-400 flex items-center gap-1 hover:underline"
           >
             View All ({teachings.length})
             <ChevronRight className="w-4 h-4" />
@@ -185,23 +278,23 @@ export const HomeView: React.FC = () => {
           {teachings.slice(0, 2).map((t) => (
             <IOSCard key={t.id} onClick={() => openTeachingDetail(t.id)}>
               <div className="space-y-3">
-                <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
-                  <span className="px-3 py-0.5 rounded-full bg-[#3B82F6]/10 text-[#3B82F6] dark:text-blue-400 font-bold border border-blue-500/20">
+                <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                  <span className="px-3 py-0.5 rounded-full glass-pill text-blue-600 dark:text-cyan-400 font-bold border border-blue-500/20">
                     {t.topic}
                   </span>
-                  <span>{t.date}</span>
+                  <span className="font-mono text-[11px]">{t.date}</span>
                 </div>
 
-                <h3 className="text-lg font-bold text-[#0F172A] dark:text-white hover:text-[#3B82F6] transition-colors">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white hover:text-blue-500 transition-colors">
                   {t.title}
                 </h3>
 
-                <p className="text-xs text-zinc-600 dark:text-zinc-300 line-clamp-2 leading-relaxed">
+                <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed">
                   {t.summary}
                 </p>
 
-                <div className="pt-3 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
-                  <span className="text-xs font-bold text-[#3B82F6] flex items-center gap-1.5">
+                <div className="pt-3 border-t border-slate-200/60 dark:border-slate-800 flex items-center justify-between">
+                  <span className="text-xs font-bold text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
                     <BookOpen className="w-4 h-4" />
                     {t.pillar} Pillar
                   </span>
@@ -214,7 +307,7 @@ export const HomeView: React.FC = () => {
                       e.stopPropagation();
                       showToast('Telegram Notice', 'Opening Telegram lesson link...');
                     }}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#3B82F6]/10 text-[#3B82F6] dark:text-blue-400 text-xs font-bold border border-blue-500/20 hover:bg-[#3B82F6]/20 transition-colors"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full glass-pill text-blue-600 dark:text-cyan-300 text-xs font-bold border border-blue-500/20 hover:bg-blue-500/20 transition-colors"
                   >
                     <Send className="w-3.5 h-3.5" />
                     Telegram Lesson
@@ -226,55 +319,25 @@ export const HomeView: React.FC = () => {
         </div>
       </section>
 
-      {/* SSGI Ekiti State Outreach Banner */}
-      <section className="relative rounded-[2.5rem] bg-gradient-to-r from-slate-950 via-[#0F172A] to-indigo-950 text-white p-8 sm:p-12 border border-blue-900/50 shadow-2xl overflow-hidden">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
-          <div className="space-y-3 max-w-xl">
-            <div className="flex items-center gap-2">
-              <span className="px-3.5 py-1 rounded-full bg-[#3B82F6]/20 text-blue-300 text-xs font-bold border border-blue-500/30">
-                Kingdom Impact
-              </span>
-              <span className="text-xs text-zinc-400 font-semibold">Prototype Data</span>
-            </div>
-            <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
-              Secondary School Gospel Invasion (SSGI)
-            </h2>
-            <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-normal">
-              Between late October and November 2025, Lively Stones Network conducted an extensive gospel invasion across Ekiti State, visiting secondary schools and raising student fellowships.
-            </p>
-          </div>
-
+      {/* TalentLMS Call to Action Banner */}
+      <section className="relative rounded-4xl bg-gradient-to-r from-slate-950 via-slate-900 to-blue-950 text-white p-8 sm:p-12 border border-white/20 dark:border-white/10 shadow-2xl overflow-hidden text-center space-y-4">
+        <span className="px-4 py-1.5 rounded-full glass-pill text-amber-300 text-xs font-mono font-bold border border-amber-500/30 inline-block">
+          BEGIN YOUR DISCIPLESHIP JOURNEY
+        </span>
+        <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight max-w-2xl mx-auto">
+          Ready to Grow Deep Roots in Christ & Impact Nations?
+        </h2>
+        <p className="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto font-normal">
+          Enlist in the School of Tyrannus discipleship class today and start your journey across the 6 growth pillars.
+        </p>
+        <div className="pt-2 flex justify-center gap-4">
           <button
-            onClick={() => setPublicRoute('impact')}
-            className="px-7 py-3 rounded-full bg-[#3B82F6] text-white font-extrabold text-xs uppercase tracking-wider hover:bg-blue-600 shadow-xl shadow-blue-500/20 shrink-0 transition-all ios-active"
+            onClick={() => setPublicRoute('join')}
+            className="px-8 py-3.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-400 text-slate-950 font-extrabold text-xs tracking-wider uppercase shadow-xl shadow-amber-500/25 transition-all ios-active"
           >
-            Explore Impact Map
+            Enlist in Discipleship Class
           </button>
         </div>
-      </section>
-
-      {/* Annual Convention Teaser */}
-      <section className="bg-[#E0ECF8]/60 dark:bg-zinc-800/60 border border-blue-500/20 rounded-[2rem] p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-[#3B82F6] text-white font-extrabold text-xl flex items-center justify-center shrink-0 shadow-md">
-            <Calendar className="w-6 h-6" />
-          </div>
-          <div>
-            <h3 className="text-base font-bold text-[#0F172A] dark:text-white">
-              {events[0].title}
-            </h3>
-            <p className="text-xs text-zinc-600 dark:text-zinc-400">
-              {events[0].date} • {events[0].location}
-            </p>
-          </div>
-        </div>
-
-        <button
-          onClick={() => setPublicRoute('events')}
-          className="px-6 py-2.5 rounded-full bg-[#3B82F6] text-white font-bold text-xs hover:bg-blue-600 shrink-0 transition-all ios-active shadow-md"
-        >
-          View Convention Details
-        </button>
       </section>
 
     </div>
