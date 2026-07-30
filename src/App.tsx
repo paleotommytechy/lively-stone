@@ -111,18 +111,30 @@ const MainLayout: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F0F4F8] dark:bg-black text-[#0F172A] dark:text-zinc-100 flex flex-col selection:bg-[#3B82F6] selection:text-white">
-      {/* Dynamic Toast Notification (iOS Dynamic Island) */}
-      <IOSDynamicIsland />
+    <div className="min-h-screen bg-[#F4F7FC] dark:bg-[#030712] text-slate-900 dark:text-slate-100 flex flex-col selection:bg-blue-500 selection:text-white relative tech-grid-bg transition-colors duration-500">
+      {/* Multi-layered Ambient Background Glow Blobs */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        {/* Top Right Cyan Glow */}
+        <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-cyan-500/15 dark:bg-cyan-500/20 blur-[120px] animate-pulse-slow" />
+        {/* Center Left Indigo Glow */}
+        <div className="absolute top-1/3 -left-32 w-[600px] h-[600px] rounded-full bg-indigo-500/15 dark:bg-indigo-600/20 blur-[140px] animate-mesh-drift" />
+        {/* Bottom Right Amber/Gold Glow */}
+        <div className="absolute -bottom-40 right-1/4 w-[550px] h-[550px] rounded-full bg-amber-500/10 dark:bg-amber-500/15 blur-[130px] animate-pulse-slow" />
+      </div>
 
-      {/* iOS Translucent Header */}
+      {/* Dynamic Toast Notification (iOS Dynamic Island) */}
+      <div className="relative z-50">
+        <IOSDynamicIsland />
+      </div>
+
+      {/* iOS Translucent Glass Header */}
       <IOSHeader />
 
-      {/* Desktop / Mobile Tab Bar */}
+      {/* Desktop / Mobile Floating Glass Tab Bar */}
       <IOSTabBar />
 
       {/* Main View Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24 md:pb-12">
+      <main className="relative z-10 flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-6 pb-28 md:pb-12 animate-ios-fade-in">
         {renderContent()}
       </main>
 

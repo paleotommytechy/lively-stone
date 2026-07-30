@@ -37,7 +37,7 @@ export const DiscipleshipJourneyView: React.FC = () => {
       description: 'Systematic study of biblical foundation, Christ’s lordship, and apostolic doctrine taught by Saint Abraham Babatunde.',
       status: 'completed',
       badge: 'Truth Encountered Badge',
-      badgeIcon: <ScrollText className="w-3.5 h-3.5 text-amber-500" />,
+      badgeIcon: <ScrollText className="w-3.5 h-3.5 text-amber-400" />,
       unlockedModules: ['Apostolic Mandate Overview', 'Nature of the Scriptures', 'Covenant Foundations']
     },
     {
@@ -48,7 +48,7 @@ export const DiscipleshipJourneyView: React.FC = () => {
       description: 'Fostering disciplined secret prayer, fasting, word meditation, and emotional healing under the Spirit’s guidance.',
       status: 'current',
       badge: 'Altar Fire Badge',
-      badgeIcon: <Award className="w-3.5 h-3.5 text-amber-500" />,
+      badgeIcon: <Award className="w-3.5 h-3.5 text-amber-400" />,
       unlockedModules: ['Cultivating Spiritual Capacity', 'Secret Place Prayer Log', 'Mind Renewal']
     },
     {
@@ -59,7 +59,7 @@ export const DiscipleshipJourneyView: React.FC = () => {
       description: 'Aligning private choices, speech, academic integrity, and relationships with the character of Jesus Christ.',
       status: 'locked',
       badge: 'Practical Integrity Badge',
-      badgeIcon: <Sparkles className="w-3.5 h-3.5 text-amber-500" />,
+      badgeIcon: <Sparkles className="w-3.5 h-3.5 text-amber-400" />,
       unlockedModules: ['Foundations of Living the Word', 'Word Obedience Audit', 'Kingdom Financial Stewardship']
     },
     {
@@ -70,7 +70,7 @@ export const DiscipleshipJourneyView: React.FC = () => {
       description: 'Mobilizing youth for high school invasions (SSGI), hospital evangelism, and community servant leadership.',
       status: 'locked',
       badge: 'Servant Leader Badge',
-      badgeIcon: <HeartHandshake className="w-3.5 h-3.5 text-amber-500" />,
+      badgeIcon: <HeartHandshake className="w-3.5 h-3.5 text-amber-400" />,
       unlockedModules: ['Secondary School Invasion Prep', 'Personal Testimony Formulation', 'Group Outreach Logistics']
     },
     {
@@ -81,7 +81,7 @@ export const DiscipleshipJourneyView: React.FC = () => {
       description: 'Gathering small groups daily/weekly for mutual accountability, teaching review, and intercession.',
       status: 'locked',
       badge: 'Tyrannus Shepherding Badge',
-      badgeIcon: <ShieldCheck className="w-3.5 h-3.5 text-amber-500" />,
+      badgeIcon: <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />,
       unlockedModules: ['The Pattern of Kingdom Multiplication', 'Small Group Facilitation', 'Spiritual Counseling']
     },
     {
@@ -92,7 +92,7 @@ export const DiscipleshipJourneyView: React.FC = () => {
       description: 'Planting new discipleship hubs, sending out missionaries, and establishing permanent kingdom influence.',
       status: 'locked',
       badge: 'Kingdom Multiplier Badge',
-      badgeIcon: <Crown className="w-3.5 h-3.5 text-amber-500" />,
+      badgeIcon: <Crown className="w-3.5 h-3.5 text-amber-400" />,
       unlockedModules: ['Territorial Warfare & Prayer', 'Sending Out Missionaries', 'Apostolic Legacy']
     }
   ];
@@ -102,47 +102,47 @@ export const DiscipleshipJourneyView: React.FC = () => {
       
       {/* Header Banner */}
       <div className="text-center max-w-3xl mx-auto space-y-3 pt-2">
-        <span className="px-3.5 py-1.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-bold border border-amber-500/20 inline-flex items-center gap-1.5">
-          <Award className="w-4 h-4 text-amber-500" />
-          Apostolic Discipleship Pathway
+        <span className="px-4 py-1.5 rounded-full glass-pill text-amber-500 dark:text-amber-300 text-xs font-mono font-bold border border-amber-500/20 inline-flex items-center gap-1.5">
+          <Award className="w-4 h-4 text-amber-400" />
+          APOSTOLIC DISCIPLESHIP PATHWAY
         </span>
-        <h1 className="text-3xl sm:text-5xl font-extrabold text-zinc-900 dark:text-white tracking-tight">
+        <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
           My Discipleship Journey
         </h1>
-        <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400">
+        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-mono">
           Learn • Grow • Live • Serve • Disciple • Multiply
         </p>
       </div>
 
       {/* Progress Summary Card */}
-      <IOSCard className="bg-gradient-to-r from-zinc-950 via-slate-900 to-zinc-900 text-white border-zinc-800 p-6 sm:p-8 shadow-2xl">
+      <IOSCard className="bg-gradient-to-r from-slate-950/90 via-slate-900/90 to-blue-950/80 text-white border-white/20 dark:border-white/10 p-6 sm:p-8 shadow-2xl backdrop-blur-2xl">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-amber-400 uppercase tracking-widest">Active Stage</span>
-              <span className="px-3 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold border border-amber-500/30">
-                Pillar 02: GROW
+              <span className="text-xs font-mono font-bold text-amber-400 uppercase tracking-widest">ACTIVE STAGE</span>
+              <span className="px-3 py-0.5 rounded-full glass-pill text-amber-300 text-xs font-mono font-bold border border-amber-500/30">
+                PILLAR 02: GROW
               </span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
               Building Interior Spiritual Fortitude
             </h2>
-            <p className="text-xs text-zinc-300">
+            <p className="text-xs text-slate-300">
               Complete your pending quiet time prayer log and submit the attached quiz to unlock Pillar 03: LIVE.
             </p>
           </div>
 
-          <div className="text-center bg-white/10 p-5 rounded-2xl border border-white/15 backdrop-blur-xl shrink-0">
-            <p className="text-xs text-zinc-300 uppercase font-bold tracking-wider">Journey Progress</p>
-            <p className="text-4xl font-extrabold text-amber-400 my-1">{student.progressPercentage}%</p>
-            <p className="text-[11px] text-zinc-400 font-medium">2 of 6 Pillars Unlocked</p>
+          <div className="text-center glass-pill p-5 rounded-3xl border border-white/20 shrink-0 backdrop-blur-xl">
+            <p className="text-xs font-mono text-slate-300 uppercase font-bold tracking-wider">JOURNEY PROGRESS</p>
+            <p className="text-4xl font-extrabold text-amber-400 my-1 font-mono">{student.progressPercentage}%</p>
+            <p className="text-[11px] text-slate-300 font-medium">2 of 6 Pillars Unlocked</p>
           </div>
         </div>
       </IOSCard>
 
       {/* Pathway Timeline */}
       <div className="space-y-6 relative">
-        <div className="hidden lg:block absolute left-8 top-12 bottom-12 w-1 bg-zinc-200 dark:bg-zinc-800 -z-0" />
+        <div className="hidden lg:block absolute left-8 top-12 bottom-12 w-1 bg-gradient-to-b from-emerald-500 via-amber-500 to-slate-800 -z-0 rounded-full" />
 
         {journeyStages.map((stg) => {
           const isDone = stg.status === 'completed';
@@ -154,9 +154,9 @@ export const DiscipleshipJourneyView: React.FC = () => {
               <IOSCard
                 className={`
                   border transition-all duration-300 
-                  ${isDone ? 'border-emerald-500/30 bg-emerald-500/5 dark:bg-emerald-950/10' : ''} 
-                  ${isCurrent ? 'border-amber-500/50 bg-amber-500/5 dark:bg-amber-950/10 ring-2 ring-amber-500/30 shadow-xl' : ''} 
-                  ${isLocked ? 'opacity-75 border-zinc-200 dark:border-zinc-800' : ''}
+                  ${isDone ? 'border-emerald-500/40 bg-emerald-500/5' : ''} 
+                  ${isCurrent ? 'border-amber-500/60 bg-amber-500/5 ring-2 ring-amber-500/30 shadow-xl' : ''} 
+                  ${isLocked ? 'opacity-70 border-white/20 dark:border-slate-800' : ''}
                 `}
               >
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -165,10 +165,10 @@ export const DiscipleshipJourneyView: React.FC = () => {
                     {/* Stage Number / Status Icon */}
                     <div 
                       className={`
-                        w-12 h-12 rounded-2xl flex items-center justify-center font-extrabold text-base shrink-0 shadow-md 
-                        ${isDone ? 'bg-emerald-500 text-white' : ''} 
-                        ${isCurrent ? 'bg-amber-500 text-zinc-950' : ''} 
-                        ${isLocked ? 'bg-zinc-200 dark:bg-zinc-800 text-zinc-400' : ''}
+                        w-12 h-12 rounded-2xl flex items-center justify-center font-extrabold text-base shrink-0 shadow-lg 
+                        ${isDone ? 'bg-emerald-500 text-white shadow-emerald-500/20' : ''} 
+                        ${isCurrent ? 'bg-gradient-to-r from-amber-500 to-amber-400 text-slate-950 shadow-amber-500/20' : ''} 
+                        ${isLocked ? 'glass-pill text-slate-400' : ''}
                       `}
                     >
                       {isDone ? <CheckCircle className="w-6 h-6" /> : isLocked ? <Lock className="w-5 h-5" /> : stg.number}
@@ -176,32 +176,32 @@ export const DiscipleshipJourneyView: React.FC = () => {
 
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">
+                        <span className="text-xs font-mono font-bold text-amber-500 dark:text-amber-400 uppercase tracking-wider">
                           Pillar {stg.number}: {stg.stage}
                         </span>
                         <span 
                           className={`
-                            text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full 
-                            ${isDone ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400' : ''} 
-                            ${isCurrent ? 'bg-amber-500/20 text-amber-700 dark:text-amber-300' : ''} 
-                            ${isLocked ? 'bg-zinc-200 dark:bg-zinc-800 text-zinc-500' : ''}
+                            text-[10px] font-mono font-extrabold uppercase px-2.5 py-0.5 rounded-full 
+                            ${isDone ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30' : ''} 
+                            ${isCurrent ? 'bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30' : ''} 
+                            ${isLocked ? 'glass-pill text-slate-400' : ''}
                           `}
                         >
                           {stg.status}
                         </span>
                       </div>
 
-                      <h3 className="text-lg font-bold text-zinc-900 dark:text-white">
+                      <h3 className="text-lg font-bold text-slate-900 dark:text-white">
                         {stg.title}
                       </h3>
-                      <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
                         {stg.description}
                       </p>
 
                       {/* Unlocked Modules Badges */}
                       <div className="pt-2 flex flex-wrap gap-1.5">
                         {stg.unlockedModules.map((m) => (
-                          <span key={m} className="px-3 py-1 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-[11px] font-semibold text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-zinc-700/60">
+                          <span key={m} className="px-3 py-1 rounded-xl glass-pill text-[11px] font-semibold text-slate-700 dark:text-slate-300 border border-white/20 dark:border-white/10">
                             {m}
                           </span>
                         ))}
@@ -210,9 +210,9 @@ export const DiscipleshipJourneyView: React.FC = () => {
                   </div>
 
                   {/* Milestone Badge Reward */}
-                  <div className="shrink-0 text-right sm:text-left pt-2 sm:pt-0 border-t sm:border-t-0 border-zinc-200 dark:border-zinc-800 w-full sm:w-auto flex sm:flex-col justify-between items-center sm:items-start">
-                    <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Milestone Award</span>
-                    <span className="text-xs font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20 inline-flex items-center gap-1.5">
+                  <div className="shrink-0 text-right sm:text-left pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-200/60 dark:border-slate-800 w-full sm:w-auto flex sm:flex-col justify-between items-center sm:items-start">
+                    <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider">MILESTONE AWARD</span>
+                    <span className="text-xs font-bold text-amber-600 dark:text-amber-400 glass-pill px-3 py-1 rounded-full border border-amber-500/30 inline-flex items-center gap-1.5 shadow-sm">
                       {stg.badgeIcon}
                       {stg.badge}
                     </span>
@@ -227,3 +227,4 @@ export const DiscipleshipJourneyView: React.FC = () => {
     </div>
   );
 };
+

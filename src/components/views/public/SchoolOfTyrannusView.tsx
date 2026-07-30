@@ -10,23 +10,23 @@ export const SchoolOfTyrannusView: React.FC = () => {
     <div className="space-y-10 pb-16 animate-ios-fade-in">
       
       {/* Top Banner */}
-      <div className="bg-gradient-to-br from-indigo-950 via-slate-900 to-zinc-950 text-white rounded-[2.5rem] p-8 sm:p-12 border border-indigo-900/50 shadow-2xl relative overflow-hidden">
+      <div className="bg-gradient-to-br from-slate-950/90 via-slate-900/90 to-blue-950/80 text-white rounded-4xl p-8 sm:p-12 border border-white/20 dark:border-white/10 shadow-2xl backdrop-blur-2xl relative overflow-hidden">
         <div className="max-w-2xl space-y-4 relative z-10">
-          <span className="px-3.5 py-1.5 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-bold border border-indigo-500/30 inline-flex items-center gap-2">
-            <BookOpen className="w-4 h-4 text-indigo-400" />
-            Discipleship Class
+          <span className="px-4 py-1.5 rounded-full glass-pill text-cyan-300 text-xs font-mono font-bold border border-cyan-500/30 inline-flex items-center gap-2">
+            <BookOpen className="w-4 h-4 text-cyan-400" />
+            DISCIPLESHIP CLASS
           </span>
           <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight">
             School of Tyrannus
           </h1>
-          <p className="text-zinc-300 text-xs sm:text-sm leading-relaxed">
+          <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
             Inspired by Apostle Paul’s two-year daily discipleship lecture hall in Ephesus (Acts 19:8-10). Convened by <strong className="text-amber-300">Saint Abraham Babatunde</strong>, this platform structures daily Telegram teachings into a complete discipleship curriculum.
           </p>
 
           <div className="pt-2 flex flex-wrap items-center gap-3">
             <button
               onClick={() => setRoleView('student')}
-              className="px-6 py-2.5 rounded-full bg-amber-500 text-zinc-950 font-bold text-xs hover:bg-amber-400 transition-all ios-active"
+              className="px-6 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-400 text-slate-950 font-extrabold text-xs hover:from-amber-400 hover:to-amber-300 transition-all ios-active shadow-lg shadow-amber-500/20"
             >
               Access Student Experience
             </button>
@@ -35,16 +35,16 @@ export const SchoolOfTyrannusView: React.FC = () => {
       </div>
 
       {/* Telegram Bridge Integration Feature Showcase */}
-      <IOSCard className="bg-blue-500/5 border-blue-500/20">
+      <IOSCard className="border border-blue-500/30">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="space-y-2 max-w-xl">
             <div className="flex items-center gap-2">
               <Send className="w-5 h-5 text-blue-500" />
-              <h3 className="text-lg font-bold text-zinc-900 dark:text-white">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">
                 Telegram Ministry Channel Connection
               </h3>
             </div>
-            <p className="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed">
+            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
               School of Tyrannus teachings delivered on Telegram are synchronized directly into this structured platform. Take attached quizzes, submit practical assignments, and earn milestone progress seamlessly.
             </p>
           </div>
@@ -65,7 +65,7 @@ export const SchoolOfTyrannusView: React.FC = () => {
 
       {/* Teachings Grid */}
       <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-zinc-900 dark:text-white tracking-tight">
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
           Curriculum & Lectures
         </h2>
 
@@ -74,21 +74,21 @@ export const SchoolOfTyrannusView: React.FC = () => {
             <IOSCard key={t.id} onClick={() => openTeachingDetail(t.id)}>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold text-xs border border-amber-500/20">
-                    {t.pillar} Pillar
+                  <span className="px-3 py-0.5 rounded-full glass-pill text-amber-500 dark:text-amber-300 font-mono font-bold text-xs border border-amber-500/20">
+                    {t.pillar} PILLAR
                   </span>
-                  <span className="text-xs text-zinc-500">{t.duration}</span>
+                  <span className="text-xs font-mono text-slate-500">{t.duration}</span>
                 </div>
 
-                <h3 className="text-lg font-bold text-zinc-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white hover:text-blue-500">
                   {t.title}
                 </h3>
-                <p className="text-xs text-zinc-600 dark:text-zinc-300 line-clamp-2">
+                <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-2">
                   {t.summary}
                 </p>
 
-                <div className="pt-3 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
-                  <span className="text-xs text-zinc-500 dark:text-zinc-400 font-medium">
+                <div className="pt-3 border-t border-slate-200/60 dark:border-slate-800 flex items-center justify-between">
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
                     By {t.speaker}
                   </span>
 
@@ -111,3 +111,4 @@ export const SchoolOfTyrannusView: React.FC = () => {
     </div>
   );
 };
+
