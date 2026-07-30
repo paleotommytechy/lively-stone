@@ -208,7 +208,22 @@ export const GlobeAnimation: React.FC = () => {
     const centerY = height / 2;
     const tilt = (23.5 * Math.PI) / 180; // 23.5 deg Earth axial tilt
 
+    let isCanvasVisible = true;
+    const observer = new IntersectionObserver(([entry]) => {
+      isCanvasVisible = entry.isIntersecting;
+      if (entry.isIntersecting && !animationFrameRef.current) {
+        animationFrameRef.current = requestAnimationFrame(render);
+      }
+    }, { threshold: 0.1 });
+
+    observer.observe(canvas);
+
     const render = () => {
+      if (!isCanvasVisible) {
+        animationFrameRef.current = null;
+        return;
+      }
+
       ctx.clearRect(0, 0, width, height);
 
       // Speed up rotation when hovered
@@ -409,6 +424,7 @@ export const GlobeAnimation: React.FC = () => {
     render();
 
     return () => {
+      observer.disconnect();
       if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
     };
   }, [isHovered, selectedCountry]);

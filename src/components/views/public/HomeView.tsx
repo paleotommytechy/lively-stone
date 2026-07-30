@@ -145,8 +145,8 @@ export const HomeView: React.FC = () => {
         </div>
       </section>
 
-      {/* Featured YouTube Video (Landscape 16:9, Autoplay Muted First 2 Mins) */}
-      <YouTubeShortPlayer videoId="5-rpQa3X-Xc" />
+      {/* Featured Video (Landscape 16:9, Local MP4, Scroll Auto-Play) */}
+      <YouTubeShortPlayer videoSrc="/video.mp4" />
 
       {/* TalentLMS Core LMS Features Showcase */}
       <section className="space-y-6">
