@@ -1,7 +1,6 @@
 import React from 'react';
 import { useApp } from '../../../context/AppContext';
 import { IOSCard } from '../../ios/IOSCard';
-import { GlobeAnimation } from './GlobeAnimation';
 import { YouTubeShortPlayer } from './YouTubeShortPlayer';
 import { 
   ArrowRight, 
@@ -117,9 +116,9 @@ export const HomeView: React.FC = () => {
             </div>
           </div>
 
-          {/* Right Hand Side: Desktop Interactive Rotating World Globe */}
+          {/* Right Hand Side: Desktop Interactive Video Player */}
           <div className="lg:col-span-5 flex justify-center w-full">
-            <GlobeAnimation />
+            <YouTubeShortPlayer videoSrc="https://www.youtube.com/shorts/LS3lNxWrydQ" />
           </div>
 
         </div>
@@ -144,9 +143,6 @@ export const HomeView: React.FC = () => {
           </div>
         </div>
       </section>
-
-      {/* Featured Video (Landscape 16:9, Local MP4, Scroll Auto-Play) */}
-      <YouTubeShortPlayer videoSrc="/video.mp4" />
 
       {/* TalentLMS Core LMS Features Showcase */}
       <section className="space-y-6">
