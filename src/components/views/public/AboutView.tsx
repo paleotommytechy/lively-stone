@@ -1,15 +1,23 @@
 import React from 'react';
 import { IOSCard } from '../../ios/IOSCard';
-import { Sparkles, Heart, Shield, Compass, BookOpen, Crown } from 'lucide-react';
+import {
+  MinistryCrestSVG,
+  SacredStonePillarSVG,
+  KingdomShieldSVG,
+  DiscipleshipCrownSVG,
+  ApostolicFireSVG
+} from '../../vectors/MinistryVectors';
+import { Sparkles, Compass, BookOpen, Heart } from 'lucide-react';
 
 export const AboutView: React.FC = () => {
   return (
     <div className="space-y-10 pb-16 animate-ios-fade-in">
       {/* Header Banner */}
       <div className="text-center max-w-3xl mx-auto space-y-4 pt-4">
-        <span className="px-4 py-1.5 rounded-full glass-pill text-amber-500 dark:text-amber-400 text-xs font-mono font-bold border border-amber-500/20">
-          ABOUT OUR MINISTRY
-        </span>
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-pill text-amber-400 text-xs font-mono font-bold border border-amber-500/30">
+          <MinistryCrestSVG className="w-4 h-4" />
+          <span>ABOUT OUR MINISTRY</span>
+        </div>
         <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white">
           Lively Stones International Network
         </h1>
@@ -19,13 +27,19 @@ export const AboutView: React.FC = () => {
       </div>
 
       {/* Convener Profile */}
-      <IOSCard className="bg-gradient-to-br from-slate-950/90 via-slate-900/90 to-indigo-950/80 text-white border-white/20 dark:border-white/10 p-8 sm:p-10 shadow-2xl backdrop-blur-2xl">
+      <IOSCard className="bg-gradient-to-br from-slate-950/95 via-slate-900/90 to-indigo-950/80 text-white border-white/20 dark:border-white/10 p-8 sm:p-10 shadow-2xl backdrop-blur-2xl">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-          <img
-            src="/AB.jpg"
-            alt="Saint Abraham Babatunde"
-            className="w-full h-80 object-cover rounded-3xl border border-white/20 shadow-2xl"
-          />
+          <div className="relative group">
+            <img
+              src="/AB.jpg"
+              alt="Saint Abraham Babatunde"
+              className="w-full h-80 object-cover rounded-3xl border border-amber-400/40 shadow-2xl"
+            />
+            <div className="absolute top-3 right-3 p-2 rounded-2xl glass-pill border border-white/30 text-amber-300 backdrop-blur-md">
+              <MinistryCrestSVG className="w-6 h-6" />
+            </div>
+          </div>
+
           <div className="md:col-span-2 space-y-4">
             <span className="text-xs font-mono font-bold uppercase tracking-widest text-amber-400">
               CONVENER & SPIRITUAL LEADER
@@ -42,10 +56,10 @@ export const AboutView: React.FC = () => {
               <span className="px-3 py-1 rounded-full glass-pill text-amber-300 border border-amber-400/30">
                 Apostolic Teaching
               </span>
-              <span className="px-3 py-1 rounded-full glass-pill text-amber-300 border border-amber-400/30">
+              <span className="px-3 py-1 rounded-full glass-pill text-cyan-300 border border-cyan-400/30">
                 Youth Evangelism
               </span>
-              <span className="px-3 py-1 rounded-full glass-pill text-amber-300 border border-amber-400/30">
+              <span className="px-3 py-1 rounded-full glass-pill text-indigo-300 border border-indigo-400/30">
                 School of Tyrannus
               </span>
             </div>
@@ -53,11 +67,11 @@ export const AboutView: React.FC = () => {
         </div>
       </IOSCard>
 
-      {/* Core Tenets */}
+      {/* Core Tenets with Custom Vector Graphics */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <IOSCard>
-          <div className="w-11 h-11 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-cyan-400 flex items-center justify-center font-bold text-lg mb-4 border border-blue-500/20">
-            <BookOpen className="w-5 h-5" />
+        <IOSCard className="border border-cyan-500/20">
+          <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center font-bold text-lg mb-4 border border-cyan-500/30 shadow-md">
+            <KingdomShieldSVG className="w-7 h-7" />
           </div>
           <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Uncompromising Truth</h3>
           <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -65,9 +79,9 @@ export const AboutView: React.FC = () => {
           </p>
         </IOSCard>
 
-        <IOSCard>
-          <div className="w-11 h-11 rounded-2xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold text-lg mb-4 border border-indigo-500/20">
-            <Compass className="w-5 h-5" />
+        <IOSCard className="border border-indigo-500/20">
+          <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center font-bold text-lg mb-4 border border-indigo-500/30 shadow-md">
+            <SacredStonePillarSVG className="w-7 h-7" />
           </div>
           <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Daily Consistency</h3>
           <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -75,9 +89,9 @@ export const AboutView: React.FC = () => {
           </p>
         </IOSCard>
 
-        <IOSCard>
-          <div className="w-11 h-11 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold text-lg mb-4 border border-amber-500/20">
-            <Heart className="w-5 h-5" />
+        <IOSCard className="border border-amber-500/20">
+          <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold text-lg mb-4 border border-amber-500/30 shadow-md">
+            <DiscipleshipCrownSVG className="w-7 h-7" />
           </div>
           <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Kingdom Multiplication</h3>
           <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -88,4 +102,3 @@ export const AboutView: React.FC = () => {
     </div>
   );
 };
-

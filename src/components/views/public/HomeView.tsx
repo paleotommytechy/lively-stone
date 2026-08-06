@@ -1,12 +1,19 @@
 import React from 'react';
 import { useApp } from '../../../context/AppContext';
 import { IOSCard } from '../../ios/IOSCard';
-import { YouTubeShortPlayer } from './YouTubeShortPlayer';
-import { 
-  ArrowRight, 
-  BookOpen, 
-  Send, 
-  Calendar, 
+import { LazyYouTubePlayer } from './LazyYouTubePlayer';
+import {
+  MinistryCrestSVG,
+  SacredStonePillarSVG,
+  KingdomShieldSVG,
+  DiscipleshipCrownSVG,
+  ApostolicFireSVG
+} from '../../vectors/MinistryVectors';
+import {
+  ArrowRight,
+  BookOpen,
+  Send,
+  Calendar,
   ChevronRight,
   Sprout,
   HeartHandshake,
@@ -17,45 +24,41 @@ import {
   Zap,
   GraduationCap,
   Award,
-  CheckCircle2,
   Users,
-  BarChart3,
   MessageSquare,
   Share2
 } from 'lucide-react';
 
 export const HomeView: React.FC = () => {
-  const { 
-    teachings, 
-    openTeachingDetail, 
-    setPublicRoute, 
+  const {
+    teachings,
+    openTeachingDetail,
+    setPublicRoute,
     setRoleView,
-    ssgiData,
-    events,
-    showToast 
+    showToast
   } = useApp();
 
   const pillars = [
-    { name: 'Learn', desc: 'Encounter pure biblical doctrine and apostolic truth.', color: 'from-blue-600 via-indigo-600 to-cyan-500', icon: <BookOpen className="w-5 h-5 text-white" /> },
-    { name: 'Grow', desc: 'Build deep spiritual endurance through prayer and fasting.', color: 'from-indigo-600 via-purple-600 to-blue-600', icon: <Sprout className="w-5 h-5 text-white" /> },
-    { name: 'Live', desc: 'Embody practical holiness in everyday decisions.', color: 'from-cyan-500 via-blue-600 to-indigo-600', icon: <Sparkles className="w-5 h-5 text-white" /> },
-    { name: 'Serve', desc: 'Deploy your gifts in secondary school and campus outreach.', color: 'from-indigo-500 via-blue-600 to-cyan-400', icon: <HeartHandshake className="w-5 h-5 text-white" /> },
-    { name: 'Disciple', desc: 'Walk intentionally with others in small fellowship groups.', color: 'from-blue-600 via-indigo-500 to-amber-500', icon: <Flame className="w-5 h-5 text-white" /> },
-    { name: 'Multiply', desc: 'Raise faithful disciple makers who impact nations for Christ.', color: 'from-amber-500 via-indigo-600 to-blue-700', icon: <Crown className="w-5 h-5 text-white" /> },
+    { name: 'Learn', desc: 'Encounter pure biblical doctrine and apostolic truth.', color: 'from-cyan-500 via-blue-600 to-indigo-700', icon: <BookOpen className="w-5 h-5 text-white" /> },
+    { name: 'Grow', desc: 'Build deep spiritual endurance through prayer and fasting.', color: 'from-indigo-600 via-blue-600 to-cyan-500', icon: <Sprout className="w-5 h-5 text-white" /> },
+    { name: 'Live', desc: 'Embody practical holiness in everyday decisions.', color: 'from-cyan-400 via-blue-600 to-indigo-600', icon: <Sparkles className="w-5 h-5 text-white" /> },
+    { name: 'Serve', desc: 'Deploy your gifts in secondary school and campus outreach.', color: 'from-indigo-500 via-blue-600 to-amber-500', icon: <HeartHandshake className="w-5 h-5 text-white" /> },
+    { name: 'Disciple', desc: 'Walk intentionally with others in small fellowship groups.', color: 'from-blue-600 via-indigo-600 to-amber-400', icon: <ApostolicFireSVG className="w-5 h-5" /> },
+    { name: 'Multiply', desc: 'Raise faithful disciple makers who impact nations for Christ.', color: 'from-amber-400 via-amber-500 to-indigo-800', icon: <DiscipleshipCrownSVG className="w-5 h-5" /> },
   ];
 
   const lmsFeatures = [
     {
       title: 'Structured Discipleship Pathways',
       desc: 'Guide learners step-by-step through 6 distinct spiritual growth stages with milestone tracking.',
-      icon: <GraduationCap className="w-6 h-6 text-blue-400" />,
-      color: 'border-blue-500/30'
+      icon: <SacredStonePillarSVG className="w-7 h-7" />,
+      color: 'border-cyan-500/30'
     },
     {
       title: 'Interactive Assessment Engine',
       desc: 'Instant quiz grading, pass score validation, and automated spiritual milestone awards.',
-      icon: <Award className="w-6 h-6 text-cyan-400" />,
-      color: 'border-cyan-500/30'
+      icon: <KingdomShieldSVG className="w-7 h-7" />,
+      color: 'border-blue-500/30'
     },
     {
       title: 'Community Q&A & Peer Desk',
@@ -73,20 +76,20 @@ export const HomeView: React.FC = () => {
 
   return (
     <div className="space-y-12 pb-16 animate-ios-fade-in">
-      
+
       {/* TalentLMS-Inspired Hero Section */}
-      <section className="relative overflow-hidden rounded-4xl bg-gradient-to-br from-slate-950/90 via-slate-900/90 to-blue-950/80 text-white p-8 sm:p-12 lg:p-14 border border-white/20 dark:border-white/10 shadow-2xl shadow-blue-500/10 backdrop-blur-2xl">
+      <section className="relative overflow-hidden rounded-4xl bg-gradient-to-br from-slate-950/95 via-slate-900/90 to-indigo-950/80 text-white p-8 sm:p-12 lg:p-14 border border-white/20 dark:border-white/10 shadow-2xl shadow-cyan-500/10 backdrop-blur-2xl">
         {/* Background Ambient Glows */}
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-cyan-500/20 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-cyan-500/15 rounded-full blur-[120px] pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-[450px] h-[450px] bg-indigo-600/20 rounded-full blur-[130px] pointer-events-none" />
 
         <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          
+
           {/* Left Hand Side: Hero Content */}
           <div className="lg:col-span-7 space-y-6">
-            {/* Holographic Pill */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-pill border border-white/30 text-cyan-300 text-xs font-mono font-bold shadow-md tracking-wider">
-              <Zap className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+            {/* Holographic Pill with Custom Crest */}
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-pill border border-cyan-400/40 text-cyan-300 text-xs font-mono font-bold shadow-md tracking-wider">
+              <MinistryCrestSVG className="w-4 h-4" />
               <span>APOSTOLIC LEARNING MANAGEMENT SYSTEM</span>
             </div>
 
@@ -101,24 +104,35 @@ export const HomeView: React.FC = () => {
             <div className="flex flex-wrap items-center gap-4 pt-3">
               <button
                 onClick={() => setPublicRoute('tyrannus')}
-                className="px-7 py-3.5 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-extrabold text-xs tracking-wider uppercase shadow-xl shadow-blue-500/30 flex items-center gap-2.5 transition-all ios-active border border-white/20"
+                className="px-7 py-3.5 rounded-full bg-gradient-to-r from-blue-600 via-cyan-500 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-extrabold text-xs tracking-wider uppercase shadow-xl shadow-cyan-500/25 flex items-center gap-2.5 transition-all ios-active border border-white/20"
               >
                 Explore LMS Courses
                 <ArrowRight className="w-4 h-4" />
               </button>
-              
+
               <button
                 onClick={() => setRoleView('student')}
-                className="px-7 py-3.5 rounded-full glass-pill hover:bg-white/20 text-white font-bold text-xs tracking-wider uppercase backdrop-blur-xl flex items-center gap-2 transition-all ios-active border border-white/30 shadow-md"
+                className="px-7 py-3.5 rounded-full glass-pill hover:bg-white/20 text-white font-bold text-xs tracking-wider uppercase backdrop-blur-xl flex items-center gap-2 transition-all ios-active border border-cyan-400/30 shadow-md"
               >
                 Launch Student Portal
               </button>
             </div>
           </div>
 
-          {/* Right Hand Side: Desktop Interactive Video Player */}
-          <div className="lg:col-span-5 flex justify-center w-full">
-            <YouTubeShortPlayer videoSrc="https://www.youtube.com/shorts/LS3lNxWrydQ" />
+          {/* Right Hand Side: Saint Abraham Babatunde Hero Image */}
+          <div className="lg:col-span-5 flex justify-center w-full relative group">
+            <div className="relative overflow-hidden rounded-3xl border-2 border-white/20 dark:border-white/10 shadow-2xl shadow-cyan-500/20 max-w-md w-full">
+              <img
+                src="/AB.jpg"
+                alt="Saint Abraham Babatunde"
+                className="w-full h-[360px] sm:h-[400px] object-cover object-top transform group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent flex flex-col justify-end p-5">
+                <span className="text-xs font-mono font-bold text-cyan-300 uppercase tracking-widest">Convener</span>
+                <h3 className="text-lg font-extrabold text-white">Saint Abraham Babatunde</h3>
+                <p className="text-xs text-slate-300">Lively Stones Ministry Network</p>
+              </div>
+            </div>
           </div>
 
         </div>
@@ -144,10 +158,10 @@ export const HomeView: React.FC = () => {
         </div>
       </section>
 
-      {/* TalentLMS Core LMS Features Showcase */}
+      {/* Core LMS Features Showcase */}
       <section className="space-y-6">
         <div className="text-center max-w-2xl mx-auto space-y-2">
-          <span className="px-4 py-1 rounded-full glass-pill text-blue-600 dark:text-blue-400 text-xs font-mono font-bold border border-blue-500/20">
+          <span className="px-4 py-1 rounded-full glass-pill text-cyan-400 text-xs font-mono font-bold border border-cyan-500/20">
             LMS CAPABILITIES
           </span>
           <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
@@ -178,7 +192,7 @@ export const HomeView: React.FC = () => {
       {/* Discipleship Pathway Framework */}
       <section className="space-y-6">
         <div className="text-center max-w-2xl mx-auto space-y-2">
-          <span className="px-4 py-1 rounded-full glass-pill text-blue-600 dark:text-blue-400 text-xs font-mono font-bold border border-blue-500/20">
+          <span className="px-4 py-1 rounded-full glass-pill text-cyan-400 text-xs font-mono font-bold border border-cyan-500/20">
             APOSTOLIC CURRICULUM
           </span>
           <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
@@ -191,13 +205,13 @@ export const HomeView: React.FC = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {pillars.map((p, idx) => (
-            <IOSCard key={p.name} className="relative overflow-hidden group hover:border-blue-400/50">
+            <IOSCard key={p.name} className="relative overflow-hidden group hover:border-cyan-400/50">
               <div className="flex items-center gap-4 mb-3">
-                <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${p.color} flex items-center justify-center shadow-lg shadow-blue-500/20 shrink-0 group-hover:scale-110 transition-transform duration-300`}>
+                <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${p.color} flex items-center justify-center shadow-lg shadow-cyan-500/20 shrink-0 group-hover:scale-110 transition-transform duration-300`}>
                   {p.icon}
                 </div>
                 <div>
-                  <span className="text-[10px] font-mono font-extrabold text-blue-500 dark:text-cyan-400 uppercase tracking-widest block">
+                  <span className="text-[10px] font-mono font-extrabold text-cyan-400 uppercase tracking-widest block">
                     PILLAR 0{idx + 1}
                   </span>
                   <h3 className="text-lg font-bold text-slate-900 dark:text-white">
@@ -217,21 +231,22 @@ export const HomeView: React.FC = () => {
       <section className="relative overflow-hidden rounded-4xl bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 text-white p-8 sm:p-12 border border-white/20 dark:border-white/10 shadow-2xl">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center relative z-10">
           <div className="relative group">
-            <img 
-              src="/AB.jpg" 
-              alt="Saint Abraham Babatunde" 
+            <img
+              src="/AB.jpg"
+              alt="Saint Abraham Babatunde"
               className="rounded-3xl shadow-2xl object-cover w-full h-80 border border-white/20 group-hover:scale-[1.02] transition-transform duration-300 shrink-0"
             />
-            <div className="absolute bottom-3 left-3 right-3 p-4 rounded-2xl glass-pill border border-white/30 text-white text-xs backdrop-blur-xl">
+            <div className="absolute bottom-3 left-3 right-3 p-4 rounded-2xl glass-pill border border-amber-400/40 text-white text-xs backdrop-blur-xl">
               <p className="font-extrabold text-sm text-white">Saint Abraham Babatunde</p>
               <p className="text-[11px] text-cyan-300 font-medium">Convener, Lively Stones Network</p>
             </div>
           </div>
 
           <div className="md:col-span-2 space-y-4">
-            <span className="px-3.5 py-1 rounded-full text-xs font-mono font-bold glass-pill text-cyan-300 border border-cyan-500/30">
-              APOSTOLIC MANDATE
-            </span>
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-mono font-bold glass-pill text-cyan-300 border border-cyan-500/30">
+              <MinistryCrestSVG className="w-4 h-4" />
+              <span>APOSTOLIC MANDATE</span>
+            </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight leading-snug">
               "We are not raising spectators. We are raising disciples built on daily biblical truth."
             </h2>
@@ -250,7 +265,7 @@ export const HomeView: React.FC = () => {
         </div>
       </section>
 
-      {/* Featured School of Tyrannus Teachings */}
+      {/* Featured Teachings */}
       <section className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
@@ -263,7 +278,7 @@ export const HomeView: React.FC = () => {
           </div>
           <button
             onClick={() => setPublicRoute('teachings')}
-            className="text-xs font-bold text-blue-600 dark:text-blue-400 flex items-center gap-1 hover:underline"
+            className="text-xs font-bold text-cyan-400 flex items-center gap-1 hover:underline"
           >
             View All ({teachings.length})
             <ChevronRight className="w-4 h-4" />
@@ -275,13 +290,13 @@ export const HomeView: React.FC = () => {
             <IOSCard key={t.id} onClick={() => openTeachingDetail(t.id)}>
               <div className="space-y-3">
                 <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-                  <span className="px-3 py-0.5 rounded-full glass-pill text-blue-600 dark:text-cyan-400 font-bold border border-blue-500/20">
+                  <span className="px-3 py-0.5 rounded-full glass-pill text-cyan-400 font-bold border border-cyan-500/20">
                     {t.topic}
                   </span>
                   <span className="font-mono text-[11px]">{t.date}</span>
                 </div>
 
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white hover:text-blue-500 transition-colors">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white hover:text-cyan-400 transition-colors">
                   {t.title}
                 </h3>
 
@@ -290,7 +305,7 @@ export const HomeView: React.FC = () => {
                 </p>
 
                 <div className="pt-3 border-t border-slate-200/60 dark:border-slate-800 flex items-center justify-between">
-                  <span className="text-xs font-bold text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
+                  <span className="text-xs font-bold text-cyan-400 flex items-center gap-1.5">
                     <BookOpen className="w-4 h-4" />
                     {t.pillar} Pillar
                   </span>
@@ -303,7 +318,7 @@ export const HomeView: React.FC = () => {
                       e.stopPropagation();
                       showToast('Telegram Notice', 'Opening Telegram lesson link...');
                     }}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full glass-pill text-blue-600 dark:text-cyan-300 text-xs font-bold border border-blue-500/20 hover:bg-blue-500/20 transition-colors"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full glass-pill text-cyan-300 text-xs font-bold border border-cyan-500/20 hover:bg-cyan-500/20 transition-colors"
                   >
                     <Send className="w-3.5 h-3.5" />
                     Telegram Lesson
@@ -315,8 +330,8 @@ export const HomeView: React.FC = () => {
         </div>
       </section>
 
-      {/* TalentLMS Call to Action Banner */}
-      <section className="relative rounded-4xl bg-gradient-to-r from-slate-950 via-slate-900 to-blue-950 text-white p-8 sm:p-12 border border-white/20 dark:border-white/10 shadow-2xl overflow-hidden text-center space-y-4">
+      {/* Call to Action Banner */}
+      <section className="relative rounded-4xl bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950 text-white p-8 sm:p-12 border border-white/20 dark:border-white/10 shadow-2xl overflow-hidden text-center space-y-4">
         <span className="px-4 py-1.5 rounded-full glass-pill text-amber-300 text-xs font-mono font-bold border border-amber-500/30 inline-block">
           BEGIN YOUR DISCIPLESHIP JOURNEY
         </span>

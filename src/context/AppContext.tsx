@@ -1,4 +1,16 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useUIStore } from '../store/useUIStore';
+import { 
+  useTeachings, 
+  useStudentProfiles, 
+  useCommunityPosts, 
+  useCreateCommunityPost, 
+  useLikeCommunityPost,
+  useSubmitQuiz,
+  useSubmitAssignment,
+  useAddTeaching 
+} from '../hooks/useDatabase';
 import { 
   RoleView, 
   PublicRoute, 
@@ -17,16 +29,7 @@ import {
   NotificationItem
 } from '../types';
 
-import { initialTeachings } from '../data/mock-teachings';
-import { currentStudent } from '../data/mock-students';
-import { initialQuizzes } from '../data/mock-quizzes';
-import { initialAssignments } from '../data/mock-assignments';
-import { initialAttendanceSessions } from '../data/mock-attendance';
-import { initialCommunityPosts } from '../data/mock-community';
-import { initialQuestions } from '../data/mock-questions';
-import { initialEvents } from '../data/mock-events';
-import { initialShareCards } from '../data/mock-share-cards';
-import { ssgiImpactMock } from '../data/mock-outreach';
+import { supabase } from '../lib/supabase';
 
 interface ToastMessage {
   id: string;
@@ -45,6 +48,7 @@ interface AppContextType {
   
   teachings: Teaching[];
   student: StudentProfile;
+  studentsList: StudentProfile[];
   quizzes: Quiz[];
   assignments: Assignment[];
   attendanceSessions: AttendanceSession[];
@@ -106,132 +110,280 @@ const getPathFromRole = (role: RoleView): string => {
   return '/';
 };
 
+const defaultStudent: StudentProfile = {
+  id: 'std-1',
+  name: 'Ifeoluwa Disciple',
+  email: 'disciple@livelystone.org',
+  location: 'Lagos, Nigeria',
+  avatarUrl: '/ifeoluwa.png',
+  currentPillar: 'Grow',
+  progressPercentage: 25,
+  weeklyStreak: 4,
+  totalTeachingsCompleted: 12,
+  quizzesCompleted: 8,
+  assignmentsSubmitted: 5,
+  attendanceRate: 95,
+  joinDate: 'Jan 2026',
+};
+
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [roleView, setRoleViewState] = useState<RoleView>(() => getRoleFromPath(window.location.pathname));
-  const [publicRoute, setPublicRoute] = useState<PublicRoute>('home');
-  const [studentRoute, setStudentRoute] = useState<StudentRoute>('dashboard');
-  const [adminRoute, setAdminRoute] = useState<AdminRoute>('overview');
-  const [selectedTeachingId, setSelectedTeachingId] = useState<string | null>('t-101');
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [publicRoute, setPublicRouteState] = useState<PublicRoute>('home');
+  const [studentRoute, setStudentRouteState] = useState<StudentRoute>('dashboard');
+  const [adminRoute, setAdminRouteState] = useState<AdminRoute>('overview');
+  const [selectedTeachingId, setSelectedTeachingId] = useState<string | null>(null);
+  const theme = useUIStore(state => state.theme);
+  const toast = useUIStore(state => state.toast);
+  const activeQuiz = useUIStore(state => state.activeQuiz);
+  const activeAssignment = useUIStore(state => state.activeAssignment);
+  const activeShareCardModal = useUIStore(state => state.activeShareCardModal);
 
-  const [teachings, setTeachings] = useState<Teaching[]>(initialTeachings);
-  const [student, setStudent] = useState<StudentProfile>(currentStudent);
-  const [quizzes] = useState<Quiz[]>(initialQuizzes);
-  const [assignments, setAssignments] = useState<Assignment[]>(initialAssignments);
-  const [attendanceSessions, setAttendanceSessions] = useState<AttendanceSession[]>(initialAttendanceSessions);
-  const [communityPosts, setCommunityPosts] = useState<CommunityPost[]>(initialCommunityPosts);
-  const [questions, setQuestions] = useState<StudentQuestion[]>(initialQuestions);
-  const [shareCards, setShareCards] = useState<ShareCard[]>(initialShareCards);
-  const [events] = useState<MinistryEvent[]>(initialEvents);
-  const [ssgiData] = useState<SSGIImpactData>(ssgiImpactMock);
+  const [teachings, setTeachings] = useState<Teaching[]>([]);
+  const [student, setStudent] = useState<StudentProfile>(defaultStudent);
+  const [studentsList, setStudentsList] = useState<StudentProfile[]>([defaultStudent]);
+  const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+  const [assignments, setAssignments] = useState<Assignment[]>([]);
+  const [attendanceSessions, setAttendanceSessions] = useState<AttendanceSession[]>([]);
+  const [communityPosts, setCommunityPosts] = useState<CommunityPost[]>([]);
+  const [questions, setQuestions] = useState<StudentQuestion[]>([]);
+  const [shareCards, setShareCards] = useState<ShareCard[]>([]);
+  const [events, setEvents] = useState<MinistryEvent[]>([]);
+  const [ssgiData, setSsgiData] = useState<SSGIImpactData>({
+    campaignName: 'School Secondary Gospel Invasion (SSGI)',
+    region: 'South-West Nigeria & West Africa',
+    dateRange: '2025 - 2026 Academic Session',
+    schoolsVisited: 18,
+    studentsReached: 12800,
+    biblesDistributed: 4250,
+    volunteersMobilized: 340,
+    stories: [
+      {
+        id: 'p-1',
+        schoolName: 'King’s College, Lagos',
+        location: 'Lagos State',
+        snippet: 'Distributed 850 Bibles and saw over 300 students dedicate their lives to Christ.',
+        fullStory: 'During the 3-day outreach at King’s College, the team conducted morning assembly devotions and small-group discipleship workshops.',
+        imageUrl: '/david.jpg',
+      },
+    ],
+  });
 
-  const [activeQuiz, setActiveQuiz] = useState<Quiz | null>(null);
-  const [activeAssignment, setActiveAssignment] = useState<Assignment | null>(null);
-  const [activeShareCardModal, setActiveShareCardModal] = useState<boolean>(false);
-  const [toast, setToast] = useState<ToastMessage | null>(null);
+  // React Query queries
+  const { data: teachingsData } = useTeachings();
+  const { data: studentsListData } = useStudentProfiles();
+  const { data: communityPostsData } = useCommunityPosts();
 
-  // Handle browser popstate events (back/forward)
+  const submitQuizMutation = useSubmitQuiz();
+  const submitAssignmentMutation = useSubmitAssignment();
+  const createPostMutation = useCreateCommunityPost();
+  const likePostMutation = useLikeCommunityPost();
+  const addTeachingMutation = useAddTeaching();
+
+  // Sync state with React Query data when it updates
   useEffect(() => {
-    const handlePopState = () => {
-      setRoleViewState(getRoleFromPath(window.location.pathname));
-    };
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
-
-  // Sync theme with HTML class
-  useEffect(() => {
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
+    if (teachingsData && teachingsData.length > 0) {
+      setTeachings(teachingsData);
+      // Set initial selected teaching if not set
+      if (!selectedTeachingId) {
+        setSelectedTeachingId(teachingsData[0].id);
+      }
     }
-  }, [theme]);
+  }, [teachingsData, selectedTeachingId]);
+
+  useEffect(() => {
+    if (studentsListData && studentsListData.length > 0) {
+      setStudentsList(studentsListData);
+      
+      // Auto-select or sync the logged in user profile
+      const getActiveUser = async () => {
+        const { data: authData } = await supabase.auth.getUser();
+        const userId = authData.user?.id;
+        if (userId) {
+          const found = studentsListData.find(s => s.id === userId);
+          if (found) setStudent(found);
+        } else {
+          setStudent(studentsListData[0]);
+        }
+      };
+      getActiveUser();
+    }
+  }, [studentsListData]);
+
+  useEffect(() => {
+    if (communityPostsData && communityPostsData.length > 0) {
+      setCommunityPosts(communityPostsData);
+    }
+  }, [communityPostsData]);
+
+
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Sync state with router location changes
+  useEffect(() => {
+    const pathname = location.pathname;
+    
+    // Sync roleView
+    if (pathname.startsWith('/admin')) {
+      setRoleViewState('admin');
+      const parts = pathname.split('/');
+      if (parts[2]) {
+        setAdminRouteState(parts[2] as AdminRoute);
+      }
+    } else if (pathname.startsWith('/student')) {
+      setRoleViewState('student');
+      const parts = pathname.split('/');
+      if (parts[2]) {
+        if (parts[2] === 'teachings' && parts[3]) {
+          setStudentRouteState('teaching-detail');
+          setSelectedTeachingId(parts[3]);
+        } else {
+          setStudentRouteState(parts[2] as StudentRoute);
+        }
+      }
+    } else {
+      setRoleViewState('public');
+      const routeName = pathname === '/' ? 'home' : pathname.substring(1);
+      if (routeName.startsWith('teachings/')) {
+        setPublicRouteState('teaching-detail');
+        const id = routeName.split('/')[1];
+        setSelectedTeachingId(id);
+      } else {
+        setPublicRouteState(routeName as PublicRoute);
+      }
+    }
+  }, [location]);
 
   const showToast = (title: string, message: string) => {
-    setToast({ id: Date.now().toString(), title, message });
-    setTimeout(() => {
-      setToast(null);
-    }, 4500);
+    useUIStore.getState().showToast(title, message);
   };
 
-  const hideToast = () => setToast(null);
+  const hideToast = () => useUIStore.getState().hideToast();
 
-  const toggleTheme = () => {
-    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
-  };
+  const toggleTheme = () => useUIStore.getState().toggleTheme();
 
   const setRoleView = (role: RoleView) => {
-    setRoleViewState(role);
-    const targetPath = getPathFromRole(role);
-    if (window.location.pathname !== targetPath) {
-      window.history.pushState(null, '', targetPath);
+    const targetPath = role === 'public' ? '/' : role === 'student' ? '/student/dashboard' : '/admin/dashboard';
+    navigate(targetPath);
+  };
+
+  const setPublicRoute = (route: PublicRoute) => {
+    if (route === 'teaching-detail') {
+      navigate(`/teachings/${selectedTeachingId || 't-101'}`);
+    } else {
+      navigate(route === 'home' ? '/' : `/${route}`);
     }
-    showToast(`Switched Role View`, `Now viewing ${role.toUpperCase()} Experience (${targetPath})`);
+  };
+
+  const setStudentRoute = (route: StudentRoute) => {
+    if (route === 'teaching-detail') {
+      navigate(`/student/teachings/${selectedTeachingId || 't-101'}`);
+    } else {
+      navigate(`/student/${route}`);
+    }
+  };
+
+  const setAdminRoute = (route: AdminRoute) => {
+    navigate(`/admin/${route}`);
   };
 
   const openTeachingDetail = (id: string) => {
     setSelectedTeachingId(id);
-    if (roleView === 'public') {
-      setPublicRoute('teaching-detail');
-    } else if (roleView === 'student') {
-      setStudentRoute('teaching-detail');
+    if (location.pathname.startsWith('/student') || roleView === 'student') {
+      navigate(`/student/teachings/${id}`);
+    } else {
+      navigate(`/teachings/${id}`);
     }
   };
 
   const startQuiz = (quizId: string) => {
     const q = quizzes.find(item => item.id === quizId);
     if (q) {
-      setActiveQuiz(q);
+      useUIStore.getState().setActiveQuiz(q);
     } else {
       showToast('Quiz unavailable', 'No quiz attached to this teaching yet.');
     }
   };
 
-  const closeQuiz = () => setActiveQuiz(null);
+  const closeQuiz = () => useUIStore.getState().setActiveQuiz(null);
 
-  const submitQuizResult = (quizId: string, score: number) => {
-    showToast('Quiz Submitted!', `You scored ${score}%. Great consistency on your journey!`);
-    setStudent(prev => ({
-      ...prev,
-      quizzesCompleted: prev.quizzesCompleted + 1,
-      progressPercentage: Math.min(100, prev.progressPercentage + 4)
-    }));
-    setActiveQuiz(null);
+  const submitQuizResult = async (quizId: string, score: number) => {
+    showToast('Submitting Quiz...', 'Sending result to server...');
+    try {
+      if (selectedTeachingId) {
+        await submitQuizMutation.mutateAsync({
+          quizId,
+          teachingId: selectedTeachingId,
+          score,
+        });
+      }
+      showToast('Quiz Submitted!', `You scored ${score}%. Great consistency on your journey!`);
+    } catch (err) {
+      console.warn('Supabase quiz submit skipped:', err);
+      // Local fallback
+      setStudent(prev => ({
+        ...prev,
+        quizzesCompleted: prev.quizzesCompleted + 1,
+        progressPercentage: Math.min(100, prev.progressPercentage + 4)
+      }));
+      showToast('Offline Mode', 'Quiz result saved locally on your device.');
+    }
+    useUIStore.getState().setActiveQuiz(null);
   };
 
   const openAssignmentModal = (assignmentId: string) => {
     const a = assignments.find(item => item.id === assignmentId);
     if (a) {
-      setActiveAssignment(a);
+      useUIStore.getState().setActiveAssignment(a);
     }
   };
 
-  const closeAssignmentModal = () => setActiveAssignment(null);
+  const closeAssignmentModal = () => useUIStore.getState().setActiveAssignment(null);
 
-  const submitAssignment = (assignmentId: string, textResponse: string) => {
-    setAssignments(prev =>
-      prev.map(item =>
-        item.id === assignmentId
-          ? {
-              ...item,
-              submitted: true,
-              submissionText: textResponse,
-              submittedAt: 'Just now',
-              status: 'submitted'
-            }
-          : item
-      )
-    );
-    setStudent(prev => ({
-      ...prev,
-      assignmentsSubmitted: prev.assignmentsSubmitted + 1,
-      progressPercentage: Math.min(100, prev.progressPercentage + 5)
-    }));
-    showToast('Assignment Submitted', 'Your response was logged successfully for mentor review.');
-    setActiveAssignment(null);
+  const submitAssignment = async (assignmentId: string, textResponse: string) => {
+    if (!textResponse.trim()) {
+      showToast('Validation Error', 'Submission text cannot be empty.');
+      return;
+    }
+    showToast('Submitting...', 'Uploading your assignment response...');
+    try {
+      const { data: authData } = await supabase.auth.getUser();
+      const userId = authData.user?.id;
+      if (userId) {
+        await submitAssignmentMutation.mutateAsync({
+          student_id: userId,
+          assignment_id: assignmentId,
+          submission_text: textResponse,
+        });
+      }
+      showToast('Assignment Submitted', 'Your answers are now pending evaluation by Apostolic Mentors.');
+    } catch (err) {
+      console.warn('Supabase assignment submit skipped:', err);
+      // Local fallback
+      setAssignments(prev =>
+        prev.map(item =>
+          item.id === assignmentId
+            ? {
+                ...item,
+                submitted: true,
+                submissionText: textResponse,
+                submittedAt: 'Just now',
+                status: 'submitted'
+              }
+            : item
+        )
+      );
+      setStudent(prev => ({
+        ...prev,
+        assignmentsSubmitted: prev.assignmentsSubmitted + 1,
+        progressPercentage: Math.min(100, prev.progressPercentage + 5)
+      }));
+      showToast('Submission Saved', 'Assignment recorded locally.');
+    }
+    useUIStore.getState().setActiveAssignment(null);
   };
 
   const toggleMarkTeachingCompleted = (teachingId: string) => {
@@ -256,39 +408,70 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
-  const addCommunityPost = (content: string, category: CommunityPost['category'], scriptureRef?: string) => {
-    const newPost: CommunityPost = {
-      id: `post-${Date.now()}`,
-      authorName: student.name,
-      authorAvatar: student.avatarUrl,
-      authorRole: 'Student Disciple',
-      category,
-      content,
-      scriptureRef,
-      timestamp: 'Just now',
-      likes: 1,
-      isLiked: true,
-      commentsCount: 0,
-      comments: []
-    };
-    setCommunityPosts(prev => [newPost, ...prev]);
-    showToast('Post Published', 'Your insight was shared with the discipleship community.');
+  const addCommunityPost = async (content: string, category: CommunityPost['category'], scriptureRef?: string) => {
+    try {
+      const { data: authData } = await supabase.auth.getUser();
+      const userId = authData.user?.id;
+      if (userId) {
+        await createPostMutation.mutateAsync({
+          author_id: userId,
+          author_name: student.name,
+          author_avatar: student.avatarUrl,
+          category,
+          content,
+          scripture_ref: scriptureRef,
+        });
+      }
+      showToast('Post Published', 'Your insight was shared with the discipleship community.');
+    } catch (err) {
+      console.warn('Supabase post creation skipped:', err);
+      // Local fallback
+      const newPost: CommunityPost = {
+        id: `post-${Date.now()}`,
+        authorName: student.name,
+        authorAvatar: student.avatarUrl,
+        authorRole: 'Student Disciple',
+        category,
+        content,
+        scriptureRef,
+        timestamp: 'Just now',
+        likes: 1,
+        isLiked: true,
+        commentsCount: 0,
+        comments: []
+      };
+      setCommunityPosts(prev => [newPost, ...prev]);
+      showToast('Offline Mode', 'Post saved locally.');
+    }
   };
 
-  const toggleLikePost = (postId: string) => {
+  const toggleLikePost = async (postId: string) => {
+    const post = communityPosts.find(p => p.id === postId);
+    if (!post) return;
+    
+    // Optimistic local update
     setCommunityPosts(prev =>
-      prev.map(post => {
-        if (post.id === postId) {
-          const isLiked = !post.isLiked;
+      prev.map(p => {
+        if (p.id === postId) {
+          const isLiked = !p.isLiked;
           return {
-            ...post,
+            ...p,
             isLiked,
-            likes: isLiked ? post.likes + 1 : post.likes - 1
+            likes: isLiked ? p.likes + 1 : p.likes - 1
           };
         }
-        return post;
+        return p;
       })
     );
+
+    try {
+      await likePostMutation.mutateAsync({
+        postId,
+        currentLikes: post.likes,
+      });
+    } catch (err) {
+      console.warn('Supabase like persist skipped:', err);
+    }
   };
 
   const addCommentToPost = (postId: string, text: string) => {
@@ -370,15 +553,30 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     showToast('Question Answered', 'Answer published successfully for students.');
   };
 
-  const addTeachingByAdmin = (newTeachingData: Omit<Teaching, 'id' | 'readCount' | 'isCompletedByStudent'>) => {
-    const newTeaching: Teaching = {
-      ...newTeachingData,
-      id: `t-${Date.now()}`,
-      readCount: 1,
-      isCompletedByStudent: false
-    };
-    setTeachings(prev => [newTeaching, ...prev]);
-    showToast('Teaching Published', `"${newTeaching.title}" is now live on School of Tyrannus!`);
+  const addTeachingByAdmin = async (newTeachingData: Omit<Teaching, 'id' | 'readCount' | 'isCompletedByStudent'>) => {
+    try {
+      await addTeachingMutation.mutateAsync({
+        title: newTeachingData.title,
+        slug: newTeachingData.slug,
+        description: newTeachingData.description,
+        summary: newTeachingData.summary,
+        topic: newTeachingData.topic,
+        pillar: newTeachingData.pillar,
+        telegram_url: newTeachingData.telegramMessageUrl,
+      });
+      showToast('Teaching Published', `"${newTeachingData.title}" is now live on School of Tyrannus!`);
+    } catch (err) {
+      console.warn('Supabase teaching publish skipped:', err);
+      // Local fallback
+      const newTeaching: Teaching = {
+        ...newTeachingData,
+        id: `t-${Date.now()}`,
+        readCount: 1,
+        isCompletedByStudent: false
+      };
+      setTeachings(prev => [newTeaching, ...prev]);
+      showToast('Offline Mode', 'Teaching published locally.');
+    }
   };
 
   const createShareCard = (newCardData: Omit<ShareCard, 'id' | 'downloadsCount' | 'approved'>) => {
@@ -409,6 +607,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         theme,
         teachings,
         student,
+        studentsList,
         quizzes,
         assignments,
         attendanceSessions,

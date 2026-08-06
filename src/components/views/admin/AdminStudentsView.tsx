@@ -1,10 +1,11 @@
 import React from 'react';
 import { useApp } from '../../../context/AppContext';
 import { IOSCard } from '../../ios/IOSCard';
-import { allStudentsList } from '../../../data/mock-students';
 import { Users, Award, Flame, CheckCircle2 } from 'lucide-react';
 
 export const AdminStudentsView: React.FC = () => {
+  const { studentsList } = useApp();
+
   return (
     <div className="space-y-8 pb-16 animate-ios-fade-in">
       <div className="space-y-2">
@@ -17,7 +18,7 @@ export const AdminStudentsView: React.FC = () => {
       </div>
 
       <div className="space-y-4">
-        {allStudentsList.map((std) => (
+        {studentsList.map((std) => (
           <IOSCard key={std.id} className="p-5">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="flex items-center gap-4">

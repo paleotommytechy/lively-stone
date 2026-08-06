@@ -1,14 +1,20 @@
 import React from 'react';
-import { AppProvider, useApp } from './context/AppContext';
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import { AppProvider } from './context/AppContext';
+import { AuthProvider } from './context/AuthContext';
+import { ProtectedPortalGuard } from './components/auth/ProtectedPortalGuard';
 import { IOSHeader } from './components/ios/IOSHeader';
 import { IOSTabBar } from './components/ios/IOSTabBar';
 import { IOSDynamicIsland } from './components/ios/IOSDynamicIsland';
 import { InteractiveQuizModal } from './components/views/student/InteractiveQuizModal';
 import { AssignmentSubmitModal } from './components/views/student/AssignmentSubmitModal';
+import { GlobalSearchModal } from './components/views/public/GlobalSearchModal';
+
+import { QueryProvider } from './providers/QueryProvider';
 
 // Public Views
 import { HomeView } from './components/views/public/HomeView';
-import { AboutView } from './components/views/public/AboutView';
+import { CachedAboutView } from './components/views/public/CachedAboutView';
 import { SchoolOfTyrannusView } from './components/views/public/SchoolOfTyrannusView';
 import { TeachingsPublicView } from './components/views/public/TeachingsPublicView';
 import { KingdomImpactView } from './components/views/public/KingdomImpactView';
@@ -33,85 +39,8 @@ import { AdminShareCardsView } from './components/views/admin/AdminShareCardsVie
 import { AdminSSGIView } from './components/views/admin/AdminSSGIView';
 
 const MainLayout: React.FC = () => {
-  const { roleView, publicRoute, studentRoute, adminRoute } = useApp();
-
-  const renderContent = () => {
-    // Public Experience Router
-    if (roleView === 'public') {
-      switch (publicRoute) {
-        case 'home':
-          return <HomeView />;
-        case 'about':
-          return <AboutView />;
-        case 'tyrannus':
-          return <SchoolOfTyrannusView />;
-        case 'teachings':
-          return <TeachingsPublicView />;
-        case 'teaching-detail':
-          return <TeachingDetailView />;
-        case 'impact':
-          return <KingdomImpactView />;
-        case 'events':
-          return <EventsView />;
-        case 'join':
-          return <JoinView />;
-        default:
-          return <HomeView />;
-      }
-    }
-
-    // Student Experience Router
-    if (roleView === 'student') {
-      switch (studentRoute) {
-        case 'dashboard':
-          return <StudentDashboardView />;
-        case 'journey':
-          return <DiscipleshipJourneyView />;
-        case 'teachings':
-          return <TeachingsPublicView />;
-        case 'teaching-detail':
-          return <TeachingDetailView />;
-        case 'attendance':
-          return <AttendanceView />;
-        case 'community':
-          return <CommunityView />;
-        case 'questions':
-          return <QuestionsView />;
-        case 'share-cards':
-          return <ShareCardGeneratorView />;
-        case 'events':
-          return <EventsView />;
-        default:
-          return <StudentDashboardView />;
-      }
-    }
-
-    // Admin Experience Router
-    if (roleView === 'admin') {
-      switch (adminRoute) {
-        case 'overview':
-          return <AdminOverviewView />;
-        case 'students':
-          return <AdminStudentsView />;
-        case 'teachings':
-        case 'create-teaching':
-          return <AdminTeachingsView />;
-        case 'questions':
-          return <AdminQAView />;
-        case 'share-cards':
-          return <AdminShareCardsView />;
-        case 'ssgi':
-          return <AdminSSGIView />;
-        default:
-          return <AdminOverviewView />;
-      }
-    }
-
-    return <HomeView />;
-  };
-
   return (
-    <div className="min-h-screen bg-[#F4F7FC] dark:bg-[#030712] text-slate-900 dark:text-slate-100 flex flex-col selection:bg-blue-500 selection:text-white relative tech-grid-bg transition-colors duration-500">
+    <div className="min-h-screen bg-[#F4F7FC] dark:bg-[#030712] text-slate-900 dark:text-slate-100 flex flex-col selection:bg-cyan-500 selection:text-white relative tech-grid-bg transition-colors duration-500">
       {/* Multi-layered Ambient Background Glow Blobs */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
         {/* Top Right Cyan Glow */}
@@ -135,20 +64,84 @@ const MainLayout: React.FC = () => {
 
       {/* Main View Container */}
       <main className="relative z-10 flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-6 pb-28 md:pb-12 animate-ios-fade-in">
-        {renderContent()}
+        <Outlet />
       </main>
 
       {/* Modals & Bottom Drawers */}
       <InteractiveQuizModal />
       <AssignmentSubmitModal />
+      <GlobalSearchModal />
     </div>
   );
 };
 
+const StudentPortalLayout: React.FC = () => {
+  return (
+    <ProtectedPortalGuard requiredRole="student">
+      <Outlet />
+    </ProtectedPortalGuard>
+  );
+};
+
+const AdminPortalLayout: React.FC = () => {
+  return (
+    <ProtectedPortalGuard requiredRole="admin">
+      <Outlet />
+    </ProtectedPortalGuard>
+  );
+};
+
+
+
 export default function App() {
   return (
-    <AppProvider>
-      <MainLayout />
-    </AppProvider>
-  );
+    <BrowserRouter>
+      <QueryProvider>
+        <AuthProvider>
+          <AppProvider>
+            <Routes>
+              <Route element={<MainLayout />}>
+                {/* Public Routes */}
+                <Route path="/" element={<HomeView />} />
+                <Route path="/about" element={<CachedAboutView />} />
+                <Route path="/tyrannus" element={<SchoolOfTyrannusView />} />
+                <Route path="/teachings" element={<TeachingsPublicView />} />
+                <Route path="/teachings/:id" element={<TeachingDetailView />} />
+                <Route path="/impact" element={<KingdomImpactView />} />
+                <Route path="/events" element={<EventsView />} />
+                <Route path="/join" element={<JoinView />} />
+
+                {/* Student Portal Routes */}
+                <Route element={<StudentPortalLayout />}>
+                  <Route path="/student" element={<Navigate to="/student/dashboard" replace />} />
+                  <Route path="/student/dashboard" element={<StudentDashboardView />} />
+                  <Route path="/student/journey" element={<DiscipleshipJourneyView />} />
+                  <Route path="/student/teachings" element={<TeachingsPublicView />} />
+                  <Route path="/student/teachings/:id" element={<TeachingDetailView />} />
+                  <Route path="/student/attendance" element={<AttendanceView />} />
+                  <Route path="/student/community" element={<CommunityView />} />
+                  <Route path="/student/questions" element={<QuestionsView />} />
+                  <Route path="/student/share-cards" element={<ShareCardGeneratorView />} />
+                </Route>
+
+                {/* Admin Portal Routes */}
+                <Route element={<AdminPortalLayout />}>
+                  <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
+                  <Route path="/admin/dashboard" element={<AdminOverviewView />} />
+                  <Route path="/admin/students" element={<AdminStudentsView />} />
+                  <Route path="/admin/teachings" element={<AdminTeachingsView />} />
+                  <Route path="/admin/questions" element={<AdminQAView />} />
+                  <Route path="/admin/share-cards" element={<AdminShareCardsView />} />
+                  <Route path="/admin/ssgi" element={<AdminSSGIView />} />
+                </Route>
+
+                {/* Fallback Catch All */}
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Route>
+            </Routes>
+        </AppProvider>
+      </AuthProvider>
+    </QueryProvider>
+  </BrowserRouter>
+);
 }

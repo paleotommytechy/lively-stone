@@ -1,9 +1,9 @@
 import React from 'react';
-import { useApp } from '../../context/AppContext';
-import { Sparkles, X, Activity } from 'lucide-react';
+import { useUIStore } from '../../store/useUIStore';
+import { Sparkles, X } from 'lucide-react';
 
 export const IOSDynamicIsland: React.FC = () => {
-  const { toast, hideToast } = useApp();
+  const { toast, hideToast } = useUIStore();
 
   if (!toast) return null;
 

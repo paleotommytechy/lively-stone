@@ -280,4 +280,24 @@
   animation: shimmerGlory 4s linear infinite;
 }
 
+/* ACCF Ikole Inspired Spring Up & Spotlight Utilities */
+@keyframes springUp {
+  0% { transform: translateY(100%); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+.animate-spring-up {
+  animation: springUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Spotlight Beam Effect for Admin Login (Image 2 design idea) */
+.spotlight-beam {
+  background: radial-gradient(circle at 50% -10%, rgba(245, 158, 11, 0.35) 0%, rgba(217, 119, 6, 0.12) 50%, transparent 80%);
+}
+
+.spotlight-lamp {
+  box-shadow: 0 0 50px 20px rgba(245, 158, 11, 0.45), inset 0 0 15px rgba(254, 240, 138, 0.7);
+}
+
+
 

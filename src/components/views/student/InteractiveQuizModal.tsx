@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { useApp } from '../../../context/AppContext';
+import { useUIStore } from '../../../store/useUIStore';
 import { IOSModal } from '../../ios/IOSModal';
 import { CheckCircle2, XCircle, ArrowRight, RotateCcw, Award } from 'lucide-react';
 
 export const InteractiveQuizModal: React.FC = () => {
-  const { activeQuiz, closeQuiz, submitQuizResult } = useApp();
+  const { activeQuiz, setActiveQuiz } = useUIStore();
+  const { submitQuizResult } = useApp();
+  const closeQuiz = () => setActiveQuiz(null);
   
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState<number>(0);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});

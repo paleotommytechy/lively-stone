@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { useApp } from '../../../context/AppContext';
+import { useUIStore } from '../../../store/useUIStore';
 import { IOSModal } from '../../ios/IOSModal';
 import { FileText, Upload, CheckCircle2, AlertCircle } from 'lucide-react';
 
 export const AssignmentSubmitModal: React.FC = () => {
-  const { activeAssignment, closeAssignmentModal, submitAssignment } = useApp();
+  const { activeAssignment, setActiveAssignment } = useUIStore();
+  const { submitAssignment } = useApp();
+  const closeAssignmentModal = () => setActiveAssignment(null);
   const [textResponse, setTextResponse] = useState('');
   const [fileName, setFileName] = useState<string | null>(null);
 
