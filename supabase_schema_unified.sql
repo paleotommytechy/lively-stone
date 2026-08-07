@@ -2,6 +2,11 @@
 -- LIVELY STONES PLATFORM — UNIFIED PRODUCTION DATABASE & AUTH SCHEMA
 -- Discipleship Platform Operating System
 -- Reference: DATABASE.md, PERMISSIONS.md, AUTHENTICATION.md
+--
+-- NOTE FOR MANUAL AUTH USER CREATIONS VIA SQL:
+-- Supabase GoTrue Auth engine requires string token columns to be empty strings ''
+-- (not SQL NULL): confirmation_token = '', recovery_token = '', email_change_token_new = '',
+-- email_change = '', reauthentication_token = ''.
 -- ============================================================================
 
 -- 1. ENUMS & EXTENSIONS

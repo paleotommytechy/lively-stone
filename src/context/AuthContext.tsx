@@ -23,21 +23,35 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const fetchUserProfile = async (userId: string, email: string): Promise<UserProfile> => {
   try {
-    const { data: profile } = await supabase
+    const { data: profile, error } = await supabase
       .from('profiles')
       .select('*')
       .eq('id', userId)
       .maybeSingle();
 
-    if (profile) return profile;
+    if (profile && !error) {
+      return {
+        id: profile.id,
+        email: profile.email || email,
+        full_name: profile.full_name || profile.display_name || email.split('@')[0],
+        role: profile.role || 'student',
+        avatar_url: profile.avatar_url,
+        current_pillar: profile.current_pillar || 'Grow',
+        created_at: profile.created_at,
+      };
+    }
+  } catch (err) {
+    console.warn('Profiles table query skipped:', err);
+  }
 
-    const { data: adminProfile } = await supabase
+  try {
+    const { data: adminProfile, error } = await supabase
       .from('admin_profiles')
       .select('*')
       .eq('id', userId)
       .maybeSingle();
 
-    if (adminProfile) {
+    if (adminProfile && !error) {
       return {
         id: adminProfile.id,
         email: adminProfile.email,
@@ -46,14 +60,18 @@ const fetchUserProfile = async (userId: string, email: string): Promise<UserProf
         current_pillar: 'Multiply',
       };
     }
+  } catch (err) {
+    console.warn('Admin profiles query skipped:', err);
+  }
 
-    const { data: studentProfile } = await supabase
+  try {
+    const { data: studentProfile, error } = await supabase
       .from('student_profiles')
       .select('*')
       .eq('id', userId)
       .maybeSingle();
 
-    if (studentProfile) {
+    if (studentProfile && !error) {
       return {
         id: studentProfile.id,
         email: studentProfile.email,
@@ -64,7 +82,7 @@ const fetchUserProfile = async (userId: string, email: string): Promise<UserProf
       };
     }
   } catch (err) {
-    console.warn('Profile fetch exception:', err);
+    console.warn('Student profiles query skipped:', err);
   }
 
   return {
