@@ -128,43 +128,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (email: string, userRole: UserRole, password?: string): Promise<boolean> => {
     setIsLoading(true);
     try {
-      const pwd = password && password.trim().length > 0 ? password : 'LivelyStone2026!';
+      if (!password || password.trim().length === 0) {
+        console.warn('Password is required for login');
+        return false;
+      }
+
       const signInRes = await supabase.auth.signInWithPassword({
         email,
-        password: pwd,
+        password,
       });
 
-      let authUser = signInRes.data?.user;
-
-      if (signInRes.error) {
-        const signUpRes = await supabase.auth.signUp({
-          email,
-          password: pwd,
-          options: {
-            data: {
-              full_name: email.split('@')[0].toUpperCase(),
-              role: userRole,
-            },
-          },
-        });
-        authUser = signUpRes.data?.user || null;
+      if (signInRes.error || !signInRes.data.user) {
+        console.warn('Authentication failed:', signInRes.error?.message);
+        setUser(null);
+        setRole('public');
+        return false;
       }
 
-      if (authUser) {
-        const profile = await fetchUserProfile(authUser.id, authUser.email || email);
-        const activeRole = profile.role || userRole;
-        setUser({ ...profile, role: activeRole });
-        setRole(activeRole);
-        setIsAuthModalOpen(false);
-        return true;
-      }
-
-      // Strictly return false when Supabase auth fails - NO dummy fallback
-      setUser(null);
-      setRole('public');
-      return false;
+      const authUser = signInRes.data.user;
+      const profile = await fetchUserProfile(authUser.id, authUser.email || email);
+      const activeRole = profile.role || userRole;
+      setUser({ ...profile, role: activeRole });
+      setRole(activeRole);
+      setIsAuthModalOpen(false);
+      return true;
     } catch (err) {
-      console.error('Strict Supabase Auth Login Error:', err);
+      console.error('Supabase Auth Login Exception:', err);
       setUser(null);
       setRole('public');
       return false;

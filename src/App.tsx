@@ -3,9 +3,8 @@ import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom
 import { AppProvider } from './context/AppContext';
 import { AuthProvider } from './context/AuthContext';
 import { ProtectedPortalGuard } from './components/auth/ProtectedPortalGuard';
-import { IOSHeader } from './components/ios/IOSHeader';
-import { IOSTabBar } from './components/ios/IOSTabBar';
-import { IOSDynamicIsland } from './components/ios/IOSDynamicIsland';
+import { Header } from './components/navigation/Header';
+import { Navigation } from './components/navigation/Navigation';
 import { InteractiveQuizModal } from './components/views/student/InteractiveQuizModal';
 import { AssignmentSubmitModal } from './components/views/student/AssignmentSubmitModal';
 import { GlobalSearchModal } from './components/views/public/GlobalSearchModal';
@@ -14,14 +13,14 @@ import { QueryProvider } from './providers/QueryProvider';
 
 // Public Views
 import { HomeView } from './components/views/public/HomeView';
-import { CachedAboutView } from './components/views/public/CachedAboutView';
+import { AboutView } from './components/views/public/AboutView';
 import { SchoolOfTyrannusView } from './components/views/public/SchoolOfTyrannusView';
 import { TeachingsPublicView } from './components/views/public/TeachingsPublicView';
 import { KingdomImpactView } from './components/views/public/KingdomImpactView';
 import { EventsView } from './components/views/public/EventsView';
 import { JoinView } from './components/views/public/JoinView';
 
-// Student Views
+// Student / Disciple Views
 import { StudentDashboardView } from './components/views/student/StudentDashboardView';
 import { DiscipleshipJourneyView } from './components/views/student/DiscipleshipJourneyView';
 import { TeachingDetailView } from './components/views/student/TeachingDetailView';
@@ -29,6 +28,9 @@ import { AttendanceView } from './components/views/student/AttendanceView';
 import { CommunityView } from './components/views/student/CommunityView';
 import { QuestionsView } from './components/views/student/QuestionsView';
 import { ShareCardGeneratorView } from './components/views/student/ShareCardGeneratorView';
+import { BibleReaderView } from './components/views/student/BibleReaderView';
+import { PrayerSystemView } from './components/views/student/PrayerSystemView';
+import { OnboardingView } from './components/views/student/OnboardingView';
 
 // Admin Views
 import { AdminOverviewView } from './components/views/admin/AdminOverviewView';
@@ -40,34 +42,16 @@ import { AdminSSGIView } from './components/views/admin/AdminSSGIView';
 
 const MainLayout: React.FC = () => {
   return (
-    <div className="min-h-screen bg-[#F4F7FC] dark:bg-[#030712] text-slate-900 dark:text-slate-100 flex flex-col selection:bg-cyan-500 selection:text-white relative tech-grid-bg transition-colors duration-500">
-      {/* Multi-layered Ambient Background Glow Blobs */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        {/* Top Right Cyan Glow */}
-        <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-cyan-500/15 dark:bg-cyan-500/20 blur-[120px] animate-pulse-slow" />
-        {/* Center Left Indigo Glow */}
-        <div className="absolute top-1/3 -left-32 w-[600px] h-[600px] rounded-full bg-indigo-500/15 dark:bg-indigo-600/20 blur-[140px] animate-mesh-drift" />
-        {/* Bottom Right Amber/Gold Glow */}
-        <div className="absolute -bottom-40 right-1/4 w-[550px] h-[550px] rounded-full bg-amber-500/10 dark:bg-amber-500/15 blur-[130px] animate-pulse-slow" />
-      </div>
-
-      {/* Dynamic Toast Notification (iOS Dynamic Island) */}
-      <div className="relative z-50">
-        <IOSDynamicIsland />
-      </div>
-
-      {/* iOS Translucent Glass Header */}
-      <IOSHeader />
-
-      {/* Desktop / Mobile Floating Glass Tab Bar */}
-      <IOSTabBar />
+    <div className="min-h-screen bg-slate-50 dark:bg-forest-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-300 font-sans">
+      <Header />
+      <Navigation />
 
       {/* Main View Container */}
-      <main className="relative z-10 flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-6 pb-28 md:pb-12 animate-ios-fade-in">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <Outlet />
       </main>
 
-      {/* Modals & Bottom Drawers */}
+      {/* Modals */}
       <InteractiveQuizModal />
       <AssignmentSubmitModal />
       <GlobalSearchModal />
@@ -91,8 +75,6 @@ const AdminPortalLayout: React.FC = () => {
   );
 };
 
-
-
 export default function App() {
   return (
     <BrowserRouter>
@@ -103,7 +85,7 @@ export default function App() {
               <Route element={<MainLayout />}>
                 {/* Public Routes */}
                 <Route path="/" element={<HomeView />} />
-                <Route path="/about" element={<CachedAboutView />} />
+                <Route path="/about" element={<AboutView />} />
                 <Route path="/tyrannus" element={<SchoolOfTyrannusView />} />
                 <Route path="/teachings" element={<TeachingsPublicView />} />
                 <Route path="/teachings/:id" element={<TeachingDetailView />} />
@@ -111,10 +93,13 @@ export default function App() {
                 <Route path="/events" element={<EventsView />} />
                 <Route path="/join" element={<JoinView />} />
 
-                {/* Student Portal Routes */}
+                {/* Student / Disciple Portal Routes */}
                 <Route element={<StudentPortalLayout />}>
                   <Route path="/student" element={<Navigate to="/student/dashboard" replace />} />
                   <Route path="/student/dashboard" element={<StudentDashboardView />} />
+                  <Route path="/student/bible" element={<BibleReaderView />} />
+                  <Route path="/student/prayer" element={<PrayerSystemView />} />
+                  <Route path="/student/onboarding" element={<OnboardingView />} />
                   <Route path="/student/journey" element={<DiscipleshipJourneyView />} />
                   <Route path="/student/teachings" element={<TeachingsPublicView />} />
                   <Route path="/student/teachings/:id" element={<TeachingDetailView />} />
@@ -139,9 +124,9 @@ export default function App() {
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Route>
             </Routes>
-        </AppProvider>
-      </AuthProvider>
-    </QueryProvider>
-  </BrowserRouter>
-);
+          </AppProvider>
+        </AuthProvider>
+      </QueryProvider>
+    </BrowserRouter>
+  );
 }

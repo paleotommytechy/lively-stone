@@ -36,21 +36,13 @@ export const useUIStore = create<UIState>((set) => ({
 
   setTheme: (theme) => {
     set({ theme });
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    document.documentElement.classList.add('dark');
   },
 
   toggleTheme: () => {
     set((state) => {
       const nextTheme = state.theme === 'dark' ? 'light' : 'dark';
-      if (nextTheme === 'dark') {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
+      document.documentElement.classList.add('dark');
       return { theme: nextTheme };
     });
   },

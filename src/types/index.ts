@@ -12,6 +12,9 @@ export type PublicRoute =
 
 export type StudentRoute = 
   | 'dashboard' 
+  | 'bible'
+  | 'prayer'
+  | 'onboarding'
   | 'journey' 
   | 'teachings' 
   | 'teaching-detail' 
