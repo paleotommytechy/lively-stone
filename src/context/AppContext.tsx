@@ -9,7 +9,15 @@ import {
   useLikeCommunityPost,
   useSubmitQuiz,
   useSubmitAssignment,
-  useAddTeaching 
+  useAddTeaching,
+  useEvents,
+  useRegisterForEvent,
+  useCreateEvent,
+  useDeleteEvent,
+  useAttendanceSessions as useAttendanceSessionsQuery,
+  useCheckinAttendance,
+  useSubmitExcuse,
+  useAdminMarkAttendance
 } from '../hooks/useDatabase';
 import { 
   RoleView, 
@@ -21,6 +29,7 @@ import {
   Quiz, 
   Assignment, 
   AttendanceSession, 
+  SessionAttendanceStatus,
   CommunityPost, 
   StudentQuestion, 
   ShareCard, 
@@ -29,6 +38,8 @@ import {
   NotificationItem
 } from '../types';
 
+import { initialEvents } from '../data/mock-events';
+import { initialAttendanceSessions } from '../data/mock-attendance';
 import { supabase } from '../lib/supabase';
 
 interface ToastMessage {
@@ -44,6 +55,7 @@ interface AppContextType {
   studentRoute: StudentRoute;
   adminRoute: AdminRoute;
   selectedTeachingId: string | null;
+  selectedEventId: string | null;
   theme: 'dark' | 'light';
   
   teachings: Teaching[];
@@ -70,6 +82,7 @@ interface AppContextType {
   setStudentRoute: (route: StudentRoute) => void;
   setAdminRoute: (route: AdminRoute) => void;
   openTeachingDetail: (id: string) => void;
+  setSelectedEventId: (id: string | null) => void;
   toggleTheme: () => void;
   
   // Interactive Workflows
@@ -93,6 +106,17 @@ interface AppContextType {
   addTeachingByAdmin: (newTeaching: Omit<Teaching, 'id' | 'readCount' | 'isCompletedByStudent'>) => void;
   createShareCard: (newCard: Omit<ShareCard, 'id' | 'downloadsCount' | 'approved'>) => void;
   incrementShareCardDownload: (id: string) => void;
+
+  // Events & Attendance Actions
+  registerForEvent: (eventId: string, fullName: string, email: string, phone?: string, notes?: string) => Promise<{ success: boolean; ticketCode?: string }>;
+  createEventByAdmin: (newEvent: Omit<MinistryEvent, 'id' | 'registeredCount'>) => Promise<void>;
+  deleteEventByAdmin: (eventId: string) => Promise<void>;
+  checkinSession: (sessionId: string, pin: string, notes?: string) => Promise<boolean>;
+  submitExcuse: (sessionId: string, reason: string) => Promise<boolean>;
+  adminCreateAttendanceSession: (newSession: Omit<AttendanceSession, 'id' | 'attended'>) => void;
+  adminMarkStudentAttendance: (sessionId: string, studentId: string, status: SessionAttendanceStatus, notes?: string) => void;
+  generateIcsCalendarFile: (event: MinistryEvent) => void;
+  generateGoogleCalendarUrl: (event: MinistryEvent) => string;
 
   showToast: (title: string, message: string, type?: 'success' | 'info' | 'warning') => void;
   hideToast: () => void;
@@ -145,11 +169,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [studentsList, setStudentsList] = useState<StudentProfile[]>([defaultStudent]);
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [assignments, setAssignments] = useState<Assignment[]>([]);
-  const [attendanceSessions, setAttendanceSessions] = useState<AttendanceSession[]>([]);
   const [communityPosts, setCommunityPosts] = useState<CommunityPost[]>([]);
   const [questions, setQuestions] = useState<StudentQuestion[]>([]);
   const [shareCards, setShareCards] = useState<ShareCard[]>([]);
-  const [events, setEvents] = useState<MinistryEvent[]>([]);
+  const [events, setEvents] = useState<MinistryEvent[]>(initialEvents);
+  const [attendanceSessions, setAttendanceSessions] = useState<AttendanceSession[]>(initialAttendanceSessions);
+  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
+
   const [ssgiData, setSsgiData] = useState<SSGIImpactData>({
     campaignName: 'School Secondary Gospel Invasion (SSGI)',
     region: 'South-West Nigeria & West Africa',
@@ -174,23 +200,78 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const { data: teachingsData } = useTeachings();
   const { data: studentsListData } = useStudentProfiles();
   const { data: communityPostsData } = useCommunityPosts();
+  const { data: eventsData } = useEvents();
+  const { data: attendanceSessionsData } = useAttendanceSessionsQuery();
 
   const submitQuizMutation = useSubmitQuiz();
   const submitAssignmentMutation = useSubmitAssignment();
   const createPostMutation = useCreateCommunityPost();
   const likePostMutation = useLikeCommunityPost();
   const addTeachingMutation = useAddTeaching();
+  const registerEventMutation = useRegisterForEvent();
+  const createEventMutation = useCreateEvent();
+  const deleteEventMutation = useDeleteEvent();
+  const checkinAttendanceMutation = useCheckinAttendance();
+  const submitExcuseMutation = useSubmitExcuse();
+  const adminMarkAttendanceMutation = useAdminMarkAttendance();
 
   // Sync state with React Query data when it updates
   useEffect(() => {
     if (teachingsData && teachingsData.length > 0) {
       setTeachings(teachingsData);
-      // Set initial selected teaching if not set
       if (!selectedTeachingId) {
         setSelectedTeachingId(teachingsData[0].id);
       }
     }
   }, [teachingsData, selectedTeachingId]);
+
+  useEffect(() => {
+    if (eventsData && eventsData.length > 0) {
+      setEvents(eventsData.map((e: any) => ({
+        id: e.id,
+        title: e.title,
+        slug: e.slug,
+        type: e.type,
+        category: e.category,
+        date: e.date_formatted || e.date,
+        time: e.time_formatted || e.time,
+        startDate: e.start_date,
+        endDate: e.end_date,
+        location: e.location,
+        venueType: e.venue_type || 'in-person',
+        onlineLink: e.online_link,
+        theme: e.theme,
+        description: e.description,
+        speakers: typeof e.speakers === 'string' ? JSON.parse(e.speakers) : (e.speakers || []),
+        bannerUrl: e.banner_url || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1200&q=80',
+        registrationOpen: e.registration_open ?? true,
+        registeredCount: e.registered_count || 0,
+        maxCapacity: e.max_capacity,
+        checkinPin: e.checkin_pin,
+        requiresCheckin: e.requires_checkin ?? true,
+        userRegistered: false,
+      })));
+    }
+  }, [eventsData]);
+
+  useEffect(() => {
+    if (attendanceSessionsData && attendanceSessionsData.length > 0) {
+      setAttendanceSessions(attendanceSessionsData.map((s: any) => ({
+        id: s.id,
+        eventId: s.event_id,
+        date: s.session_date,
+        time: s.session_time || '5:00 PM',
+        title: s.title,
+        topic: s.topic,
+        sessionType: s.session_type || 'Tyrannus',
+        pillar: s.pillar || 'Grow',
+        attended: false,
+        status: 'absent',
+        checkinPin: s.checkin_pin || '777',
+        isActive: s.is_active ?? true,
+      })));
+    }
+  }, [attendanceSessionsData]);
 
   useEffect(() => {
     if (studentsListData && studentsListData.length > 0) {
@@ -216,8 +297,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       setCommunityPosts(communityPostsData);
     }
   }, [communityPostsData]);
-
-
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -596,6 +675,248 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     );
   };
 
+  // ----------------------------------------------------
+  // EVENTS & ATTENDANCE ACTIONS
+  // ----------------------------------------------------
+  const registerForEvent = async (
+    eventId: string,
+    fullName: string,
+    email: string,
+    phone?: string,
+    notes?: string
+  ): Promise<{ success: boolean; ticketCode?: string }> => {
+    const generatedTicketCode = `TKT-${Math.random().toString(36).substring(2, 9).toUpperCase()}`;
+    
+    // Optimistically update local state
+    setEvents(prev =>
+      prev.map(evt =>
+        evt.id === eventId
+          ? {
+              ...evt,
+              registeredCount: evt.registeredCount + 1,
+              userRegistered: true,
+              ticketCode: generatedTicketCode,
+            }
+          : evt
+      )
+    );
+
+    try {
+      await registerEventMutation.mutateAsync({
+        eventId,
+        fullName,
+        email,
+        phone,
+        notes,
+      });
+    } catch (err) {
+      console.warn('Supabase event registration error (using local state):', err);
+    }
+
+    showToast('Registration Confirmed', `You are registered! Ticket: ${generatedTicketCode}`, 'success');
+    return { success: true, ticketCode: generatedTicketCode };
+  };
+
+  const createEventByAdmin = async (newEvent: Omit<MinistryEvent, 'id' | 'registeredCount'>) => {
+    const id = `evt-${Date.now()}`;
+    const fullEvent: MinistryEvent = {
+      ...newEvent,
+      id,
+      registeredCount: 0,
+      userRegistered: false,
+    };
+
+    setEvents(prev => [fullEvent, ...prev]);
+
+    try {
+      await createEventMutation.mutateAsync({
+        title: newEvent.title,
+        slug: newEvent.slug || newEvent.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        type: newEvent.type,
+        category: newEvent.category || 'Ministry',
+        date_formatted: newEvent.date,
+        time_formatted: newEvent.time,
+        start_date: newEvent.startDate || new Date().toISOString(),
+        location: newEvent.location,
+        venue_type: newEvent.venueType || 'in-person',
+        online_link: newEvent.onlineLink,
+        theme: newEvent.theme,
+        description: newEvent.description,
+        speakers: newEvent.speakers,
+        banner_url: newEvent.bannerUrl,
+        registration_open: newEvent.registrationOpen,
+        max_capacity: newEvent.maxCapacity,
+        checkin_pin: newEvent.checkinPin || '777',
+      });
+    } catch (err) {
+      console.warn('Supabase create event error:', err);
+    }
+
+    showToast('Event Created', `"${newEvent.title}" has been published.`, 'success');
+  };
+
+  const deleteEventByAdmin = async (eventId: string) => {
+    setEvents(prev => prev.filter(e => e.id !== eventId));
+    try {
+      await deleteEventMutation.mutateAsync(eventId);
+    } catch (err) {
+      console.warn('Supabase delete event skipped:', err);
+    }
+    showToast('Event Removed', 'Event has been archived.', 'info');
+  };
+
+  const checkinSession = async (sessionId: string, pin: string, notes?: string): Promise<boolean> => {
+    const targetSession = attendanceSessions.find(s => s.id === sessionId);
+    if (!targetSession) {
+      showToast('Check-in Error', 'Session not found.', 'warning');
+      return false;
+    }
+
+    if (targetSession.checkinPin && targetSession.checkinPin !== pin.trim()) {
+      showToast('Invalid PIN', 'The session check-in code does not match.', 'warning');
+      return false;
+    }
+
+    // Optimistic update
+    setAttendanceSessions(prev =>
+      prev.map(s =>
+        s.id === sessionId
+          ? { ...s, attended: true, status: 'present', notes: notes || 'Confirmed present via self check-in.' }
+          : s
+      )
+    );
+
+    setStudent(prev => ({
+      ...prev,
+      weeklyStreak: prev.weeklyStreak + 1,
+      attendanceRate: Math.min(100, Math.round(((attendanceSessions.filter(s => s.attended).length + 1) / attendanceSessions.length) * 100)),
+      progressPercentage: Math.min(100, prev.progressPercentage + 2),
+    }));
+
+    try {
+      await checkinAttendanceMutation.mutateAsync({
+        sessionId,
+        pin,
+        notes,
+      });
+    } catch (err) {
+      console.warn('Supabase checkin skipped (local state saved):', err);
+    }
+
+    showToast('Presence Confirmed!', `Attended "${targetSession.title}". Faithfulness recorded!`, 'success');
+    return true;
+  };
+
+  const submitExcuse = async (sessionId: string, reason: string): Promise<boolean> => {
+    if (!reason.trim()) {
+      showToast('Validation Error', 'Please specify a reason for absence.', 'warning');
+      return false;
+    }
+
+    setAttendanceSessions(prev =>
+      prev.map(s =>
+        s.id === sessionId
+          ? { ...s, attended: false, status: 'excused', notes: `Excuse note: ${reason}` }
+          : s
+      )
+    );
+
+    try {
+      await submitExcuseMutation.mutateAsync({
+        sessionId,
+        reason,
+      });
+    } catch (err) {
+      console.warn('Supabase excuse skipped:', err);
+    }
+
+    showToast('Excuse Submitted', 'Absence note recorded and sent to Apostolic Mentors.', 'info');
+    return true;
+  };
+
+  const adminCreateAttendanceSession = (newSession: Omit<AttendanceSession, 'id' | 'attended'>) => {
+    const session: AttendanceSession = {
+      ...newSession,
+      id: `att-${Date.now()}`,
+      attended: false,
+      status: 'absent',
+      isActive: true,
+    };
+    setAttendanceSessions(prev => [session, ...prev]);
+    showToast('Session Created', `New session "${newSession.title}" is now open for check-in.`, 'success');
+  };
+
+  const adminMarkStudentAttendance = (
+    sessionId: string,
+    studentId: string,
+    status: SessionAttendanceStatus,
+    notes?: string
+  ) => {
+    setAttendanceSessions(prev =>
+      prev.map(s =>
+        s.id === sessionId
+          ? { ...s, attended: status === 'present' || status === 'late', status, notes: notes || s.notes }
+          : s
+      )
+    );
+
+    try {
+      adminMarkAttendanceMutation.mutate({
+        sessionId,
+        studentId,
+        status,
+        notes,
+      });
+    } catch (err) {
+      console.warn('Supabase admin mark attendance error:', err);
+    }
+
+    showToast('Attendance Updated', `Student status marked as ${status.toUpperCase()}.`, 'info');
+  };
+
+  const generateIcsCalendarFile = (event: MinistryEvent) => {
+    const cleanTitle = event.title.replace(/[,;]/g, '');
+    const cleanDesc = event.description.replace(/\n/g, ' ');
+    const cleanLocation = event.location.replace(/[,;]/g, '');
+    
+    // Format simple RFC 5545 timestamp
+    const nowStr = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    const icsData = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Lively Stones International Network//Events//EN',
+      'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH',
+      'BEGIN:VEVENT',
+      `UID:${event.id}@livelystone.org`,
+      `DTSTAMP:${nowStr}`,
+      `DTSTART:${nowStr}`,
+      `SUMMARY:${cleanTitle}`,
+      `DESCRIPTION:${cleanDesc}`,
+      `LOCATION:${cleanLocation}`,
+      `STATUS:CONFIRMED`,
+      'END:VEVENT',
+      'END:VCALENDAR'
+    ].join('\r\n');
+
+    const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `${event.slug || 'ministry-event'}.ics`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showToast('Calendar Invite Downloaded', `Added ${event.title} to your device calendar.`, 'success');
+  };
+
+  const generateGoogleCalendarUrl = (event: MinistryEvent): string => {
+    const title = encodeURIComponent(event.title);
+    const details = encodeURIComponent(`${event.description}\n\nTheme: ${event.theme}\nSpeakers: ${event.speakers.join(', ')}`);
+    const location = encodeURIComponent(event.location);
+    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}`;
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -604,6 +925,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         studentRoute,
         adminRoute,
         selectedTeachingId,
+        selectedEventId,
         theme,
         teachings,
         student,
@@ -626,6 +948,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setStudentRoute,
         setAdminRoute,
         openTeachingDetail,
+        setSelectedEventId,
         toggleTheme,
 
         startQuiz,
@@ -648,6 +971,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         addTeachingByAdmin,
         createShareCard,
         incrementShareCardDownload,
+
+        // Events & Attendance
+        registerForEvent,
+        createEventByAdmin,
+        deleteEventByAdmin,
+        checkinSession,
+        submitExcuse,
+        adminCreateAttendanceSession,
+        adminMarkStudentAttendance,
+        generateIcsCalendarFile,
+        generateGoogleCalendarUrl,
 
         showToast,
         hideToast,

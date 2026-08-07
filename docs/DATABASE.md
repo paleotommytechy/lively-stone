@@ -300,29 +300,94 @@ Moderation system.
 
 ---
 
-# Events Module
+# Events & Attendance Module
 
-## Events
+## Events (`public.events`)
 
-Bible studies.
+Stores ministry convocations, leadership retreats, secondary school invasions, and theological seminars.
 
-Prayer meetings.
-
-Conferences.
-
-Retreats.
+Columns:
+* `id` (UUID, Primary Key)
+* `title` (TEXT, Not Null)
+* `slug` (TEXT, Unique)
+* `type` (TEXT: 'Convention', 'Retreat', 'Evangelism', 'Class', 'Bible Study', 'Prayer Gathering')
+* `category` (TEXT)
+* `start_date` / `end_date` (TIMESTAMPTZ)
+* `date_formatted` / `time_formatted` (TEXT)
+* `location` (TEXT)
+* `venue_type` (TEXT: 'in-person', 'online', 'hybrid')
+* `online_link` (TEXT)
+* `theme` (TEXT)
+* `description` (TEXT)
+* `speakers` (JSONB Array)
+* `banner_url` (TEXT)
+* `registration_open` (BOOLEAN)
+* `registered_count` (INTEGER)
+* `max_capacity` (INTEGER)
+* `checkin_pin` (TEXT)
+* `requires_checkin` (BOOLEAN)
+* `published_by` (UUID -> profiles.id)
 
 ---
 
-## Registration
+## Event Registrations (`public.event_registrations`)
 
-User registration.
+Stores confirmed attendee registrations and issued digital pass tickets.
+
+Columns:
+* `id` (UUID, Primary Key)
+* `event_id` (UUID -> events.id)
+* `user_id` (UUID -> profiles.id)
+* `full_name` (TEXT)
+* `email` (TEXT)
+* `phone` (TEXT)
+* `attendance_status` ('registered', 'attended', 'cancelled', 'no-show')
+* `qr_ticket_code` (TEXT, Unique)
+* `registered_at` / `checked_in_at` (TIMESTAMPTZ)
 
 ---
 
-## Attendance
+## Attendance Sessions (`public.attendance_sessions`)
 
-Tracks participation.
+Tracks recurring School of Tyrannus sessions, prayer vigils, and discipleship modules.
+
+Columns:
+* `id` (UUID, Primary Key)
+* `event_id` (UUID -> events.id, Nullable)
+* `title` (TEXT)
+* `topic` (TEXT)
+* `session_date` (DATE)
+* `session_time` (TEXT)
+* `session_type` ('Tyrannus', 'Bible Study', 'Prayer Meeting', 'Special')
+* `pillar` (PillarStage: Learn, Grow, Live, Serve, Disciple, Multiply)
+* `checkin_pin` (TEXT)
+* `is_active` (BOOLEAN)
+
+---
+
+## Attendance Records (`public.attendance_records`)
+
+Tracks individual disciple presence, absence notices, and mentor evaluations.
+
+Columns:
+* `id` (UUID, Primary Key)
+* `session_id` (UUID -> attendance_sessions.id)
+* `student_id` (UUID -> profiles.id)
+* `status` ('present', 'excused', 'absent', 'late')
+* `check_in_time` (TIMESTAMPTZ)
+* `excuse_reason` (TEXT)
+* `notes` (TEXT)
+* `marked_by` (UUID -> profiles.id)
+
+---
+
+## Stored Procedures (RPCs)
+
+* `register_for_event(p_event_id, p_full_name, p_email, p_phone, p_notes)`
+* `checkin_student_attendance(p_session_id, p_pin, p_notes)`
+* `request_session_excuse(p_session_id, p_reason)`
+* `admin_mark_attendance(p_session_id, p_student_id, p_status, p_notes)`
+
 
 ---
 

@@ -111,6 +111,12 @@ export const Header: React.FC = () => {
               >
                 Q&A
               </button>
+              <button 
+                onClick={() => setStudentRoute('attendance')} 
+                className="px-3.5 py-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-forest-900 transition-colors"
+              >
+                Attendance
+              </button>
             </>
           )}
 
@@ -133,6 +139,18 @@ export const Header: React.FC = () => {
                 className="px-3.5 py-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-forest-900 transition-colors"
               >
                 Teachings
+              </button>
+              <button 
+                onClick={() => setAdminRoute('events')} 
+                className="px-3.5 py-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-forest-900 transition-colors"
+              >
+                Events
+              </button>
+              <button 
+                onClick={() => setAdminRoute('attendance')} 
+                className="px-3.5 py-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-forest-900 transition-colors"
+              >
+                Attendance
               </button>
               <button 
                 onClick={() => setAdminRoute('questions')} 

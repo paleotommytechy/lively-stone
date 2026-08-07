@@ -68,15 +68,27 @@ export const Navigation: React.FC = () => {
         </button>
 
         <button
-          onClick={() => setStudentRoute('share-cards')}
+          onClick={() => setStudentRoute('attendance')}
           className={`px-4 py-2 rounded-xl shrink-0 flex items-center gap-1.5 transition-all ${
-            studentRoute === 'share-cards'
+            studentRoute === 'attendance'
               ? 'bg-forest-800 text-white shadow-md'
               : 'text-slate-700 dark:text-forest-200 hover:bg-white dark:hover:bg-forest-800/50'
           }`}
         >
-          <Share2 className="w-4 h-4 text-gold-400" />
-          Share Insight Cards
+          <Award className="w-4 h-4 text-emerald-400" />
+          Attendance & Streak
+        </button>
+
+        <button
+          onClick={() => setStudentRoute('events')}
+          className={`px-4 py-2 rounded-xl shrink-0 flex items-center gap-1.5 transition-all ${
+            studentRoute === 'events'
+              ? 'bg-forest-800 text-white shadow-md'
+              : 'text-slate-700 dark:text-forest-200 hover:bg-white dark:hover:bg-forest-800/50'
+          }`}
+        >
+          <Users className="w-4 h-4 text-gold-400" />
+          Gatherings & Events
         </button>
 
       </div>

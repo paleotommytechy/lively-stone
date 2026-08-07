@@ -39,6 +39,8 @@ import { AdminQAView } from './components/views/admin/AdminQAView';
 import { AdminStudentsView } from './components/views/admin/AdminStudentsView';
 import { AdminShareCardsView } from './components/views/admin/AdminShareCardsView';
 import { AdminSSGIView } from './components/views/admin/AdminSSGIView';
+import { AdminEventsView } from './components/views/admin/AdminEventsView';
+import { AdminAttendanceView } from './components/views/admin/AdminAttendanceView';
 
 const MainLayout: React.FC = () => {
   return (
@@ -104,6 +106,7 @@ export default function App() {
                   <Route path="/student/teachings" element={<TeachingsPublicView />} />
                   <Route path="/student/teachings/:id" element={<TeachingDetailView />} />
                   <Route path="/student/attendance" element={<AttendanceView />} />
+                  <Route path="/student/events" element={<EventsView />} />
                   <Route path="/student/community" element={<CommunityView />} />
                   <Route path="/student/questions" element={<QuestionsView />} />
                   <Route path="/student/share-cards" element={<ShareCardGeneratorView />} />
@@ -115,6 +118,8 @@ export default function App() {
                   <Route path="/admin/dashboard" element={<AdminOverviewView />} />
                   <Route path="/admin/students" element={<AdminStudentsView />} />
                   <Route path="/admin/teachings" element={<AdminTeachingsView />} />
+                  <Route path="/admin/events" element={<AdminEventsView />} />
+                  <Route path="/admin/attendance" element={<AdminAttendanceView />} />
                   <Route path="/admin/questions" element={<AdminQAView />} />
                   <Route path="/admin/share-cards" element={<AdminShareCardsView />} />
                   <Route path="/admin/ssgi" element={<AdminSSGIView />} />
@@ -130,3 +135,4 @@ export default function App() {
     </BrowserRouter>
   );
 }
+

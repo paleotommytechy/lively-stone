@@ -187,19 +187,103 @@ export interface ShareCard {
   downloadsCount: number;
 }
 
+export type MinistryEventType = 
+  | 'Convention' 
+  | 'Retreat' 
+  | 'Evangelism' 
+  | 'Class' 
+  | 'Bible Study' 
+  | 'Prayer Gathering' 
+  | 'Workshop';
+
+export type VenueType = 'in-person' | 'online' | 'hybrid';
+
 export interface MinistryEvent {
   id: string;
   title: string;
-  type: 'Convention' | 'Retreat' | 'Evangelism' | 'Class';
+  slug?: string;
+  type: MinistryEventType;
+  category?: string;
   date: string;
   time: string;
+  startDate?: string;
+  endDate?: string;
   location: string;
+  venueType?: VenueType;
+  onlineLink?: string;
   theme: string;
   description: string;
   speakers: string[];
   bannerUrl: string;
   registrationOpen: boolean;
   registeredCount: number;
+  maxCapacity?: number;
+  checkinPin?: string;
+  requiresCheckin?: boolean;
+  userRegistered?: boolean;
+  userAttended?: boolean;
+  ticketCode?: string;
+}
+
+export interface EventRegistration {
+  id: string;
+  eventId: string;
+  userId?: string;
+  fullName: string;
+  email: string;
+  phone?: string;
+  attendanceStatus: 'registered' | 'attended' | 'cancelled' | 'no-show';
+  qrTicketCode: string;
+  notes?: string;
+  registeredAt: string;
+  checkedInAt?: string;
+}
+
+export type SessionAttendanceStatus = 'present' | 'excused' | 'absent' | 'late';
+
+export interface AttendanceSession {
+  id: string;
+  eventId?: string;
+  date: string;
+  time?: string;
+  title: string;
+  topic: string;
+  sessionType?: 'Tyrannus' | 'Bible Study' | 'Prayer Meeting' | 'Special';
+  pillar?: PillarStage;
+  attended: boolean;
+  status?: SessionAttendanceStatus;
+  notes?: string;
+  checkinPin?: string;
+  isActive?: boolean;
+}
+
+export interface AttendanceRecord {
+  id: string;
+  sessionId: string;
+  sessionTitle?: string;
+  sessionDate?: string;
+  studentId: string;
+  studentName?: string;
+  status: SessionAttendanceStatus;
+  checkInTime?: string;
+  excuseReason?: string;
+  notes?: string;
+  markedBy?: string;
+}
+
+export interface AttendanceSummary {
+  attendanceRate: number;
+  weeklyStreak: number;
+  totalSessions: number;
+  attendedCount: number;
+  excusedCount: number;
+  absentCount: number;
+  monthlyConsistency: {
+    month: string;
+    rate: number;
+    attended: number;
+    total: number;
+  }[];
 }
 
 export interface SSGIImpactData {
@@ -229,3 +313,4 @@ export interface NotificationItem {
   type: 'teaching' | 'quiz' | 'assignment' | 'event' | 'community' | 'qna';
   linkRoute?: string;
 }
+

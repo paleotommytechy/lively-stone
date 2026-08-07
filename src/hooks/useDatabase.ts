@@ -245,3 +245,201 @@ export const useAddTeaching = () => {
     },
   });
 };
+
+// ----------------------------------------------------
+// 7. EVENTS HOOKS & MUTATIONS
+// ----------------------------------------------------
+export const useEvents = () => {
+  return useQuery({
+    queryKey: ['events'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('events')
+        .select('*')
+        .is('deleted_at', null)
+        .order('start_date', { ascending: true });
+
+      if (error) throw error;
+      return data;
+    },
+  });
+};
+
+export const useRegisterForEvent = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      eventId,
+      fullName,
+      email,
+      phone,
+      notes,
+    }: {
+      eventId: string;
+      fullName: string;
+      email: string;
+      phone?: string;
+      notes?: string;
+    }) => {
+      const { data, error } = await supabase.rpc('register_for_event', {
+        p_event_id: eventId,
+        p_full_name: fullName,
+        p_email: email,
+        p_phone: phone || null,
+        p_notes: notes || null,
+      });
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['events'] });
+    },
+  });
+};
+
+export const useCreateEvent = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (eventData: any) => {
+      const { data, error } = await supabase
+        .from('events')
+        .insert([eventData])
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['events'] });
+    },
+  });
+};
+
+export const useDeleteEvent = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (eventId: string) => {
+      const { data, error } = await supabase
+        .from('events')
+        .update({ deleted_at: new Date().toISOString() })
+        .eq('id', eventId)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['events'] });
+    },
+  });
+};
+
+// ----------------------------------------------------
+// 8. ATTENDANCE SESSIONS & RECORDS HOOKS
+// ----------------------------------------------------
+export const useAttendanceSessions = () => {
+  return useQuery({
+    queryKey: ['attendance_sessions'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('attendance_sessions')
+        .select('*')
+        .order('session_date', { ascending: false });
+
+      if (error) throw error;
+      return data;
+    },
+  });
+};
+
+export const useCheckinAttendance = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      sessionId,
+      pin,
+      notes,
+    }: {
+      sessionId: string;
+      pin: string;
+      notes?: string;
+    }) => {
+      const { data, error } = await supabase.rpc('checkin_student_attendance', {
+        p_session_id: sessionId,
+        p_pin: pin,
+        p_notes: notes || null,
+      });
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['attendance_sessions'] });
+      queryClient.invalidateQueries({ queryKey: ['student_profiles'] });
+    },
+  });
+};
+
+export const useSubmitExcuse = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      sessionId,
+      reason,
+    }: {
+      sessionId: string;
+      reason: string;
+    }) => {
+      const { data, error } = await supabase.rpc('request_session_excuse', {
+        p_session_id: sessionId,
+        p_reason: reason,
+      });
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['attendance_sessions'] });
+    },
+  });
+};
+
+export const useAdminMarkAttendance = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      sessionId,
+      studentId,
+      status,
+      notes,
+    }: {
+      sessionId: string;
+      studentId: string;
+      status: string;
+      notes?: string;
+    }) => {
+      const { data, error } = await supabase
+        .from('attendance_records')
+        .upsert({
+          session_id: sessionId,
+          student_id: studentId,
+          status,
+          notes,
+          check_in_time: new Date().toISOString(),
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['attendance_sessions'] });
+      queryClient.invalidateQueries({ queryKey: ['student_profiles'] });
+    },
+  });
+};
+
