@@ -42,7 +42,26 @@ import { AdminSSGIView } from './components/views/admin/AdminSSGIView';
 import { AdminEventsView } from './components/views/admin/AdminEventsView';
 import { AdminAttendanceView } from './components/views/admin/AdminAttendanceView';
 
+import { StudentSidebar } from './components/navigation/StudentSidebar';
+import { StudentHeader } from './components/navigation/StudentHeader';
+import { useLocation } from 'react-router-dom';
+
 const MainLayout: React.FC = () => {
+  const location = useLocation();
+  const isStudentPortal = location.pathname.startsWith('/student');
+
+  if (isStudentPortal) {
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-forest-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-300 font-sans">
+        <Outlet />
+        {/* Modals */}
+        <InteractiveQuizModal />
+        <AssignmentSubmitModal />
+        <GlobalSearchModal />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-forest-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-300 font-sans">
       <Header />
@@ -64,7 +83,15 @@ const MainLayout: React.FC = () => {
 const StudentPortalLayout: React.FC = () => {
   return (
     <ProtectedPortalGuard requiredRole="student">
-      <Outlet />
+      <div className="min-h-screen flex bg-slate-50 dark:bg-forest-950 text-slate-900 dark:text-slate-100 font-sans transition-colors duration-300">
+        <StudentSidebar />
+        <div className="flex-1 flex flex-col min-w-0">
+          <StudentHeader />
+          <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <Outlet />
+          </main>
+        </div>
+      </div>
     </ProtectedPortalGuard>
   );
 };

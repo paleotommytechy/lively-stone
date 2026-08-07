@@ -15,6 +15,8 @@ interface UIState {
   activeAssignment: Assignment | null;
   activeShareCardModal: boolean;
   isSearchOpen: boolean;
+  isSidebarCollapsed: boolean;
+  isMobileNavOpen: boolean;
   
   // Actions
   setTheme: (theme: 'dark' | 'light') => void;
@@ -25,6 +27,10 @@ interface UIState {
   setActiveAssignment: (assignment: Assignment | null) => void;
   setActiveShareCardModal: (open: boolean) => void;
   setSearchOpen: (open: boolean) => void;
+  toggleSidebarCollapsed: () => void;
+  setSidebarCollapsed: (collapsed: boolean) => void;
+  toggleMobileNav: () => void;
+  setMobileNavOpen: (open: boolean) => void;
 }
 
 export const useUIStore = create<UIState>((set) => ({
@@ -33,6 +39,9 @@ export const useUIStore = create<UIState>((set) => ({
   activeQuiz: null,
   activeAssignment: null,
   activeShareCardModal: false,
+  isSearchOpen: false,
+  isSidebarCollapsed: false,
+  isMobileNavOpen: false,
 
   setTheme: (theme) => {
     set({ theme });
@@ -66,6 +75,10 @@ export const useUIStore = create<UIState>((set) => ({
   setActiveQuiz: (activeQuiz) => set({ activeQuiz }),
   setActiveAssignment: (activeAssignment) => set({ activeAssignment }),
   setActiveShareCardModal: (activeShareCardModal) => set({ activeShareCardModal }),
-  isSearchOpen: false,
   setSearchOpen: (isSearchOpen) => set({ isSearchOpen }),
+  
+  toggleSidebarCollapsed: () => set((state) => ({ isSidebarCollapsed: !state.isSidebarCollapsed })),
+  setSidebarCollapsed: (isSidebarCollapsed) => set({ isSidebarCollapsed }),
+  toggleMobileNav: () => set((state) => ({ isMobileNavOpen: !state.isMobileNavOpen })),
+  setMobileNavOpen: (isMobileNavOpen) => set({ isMobileNavOpen }),
 }));

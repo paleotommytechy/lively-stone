@@ -82,23 +82,35 @@ Visitors should never see internal ministry tools.
 
 Purpose:
 
-Support the disciple's daily spiritual growth.
+Support the disciple's daily spiritual growth, apostolic doctrine, spiritual disciplines, and consistency.
 
-### Primary Navigation
+### Responsive Navigation Architecture
 
+The Disciple Portal features an intentional responsive navigation architecture:
+- **Desktop Expanded (272px)**: Persistent dark translucent sidebar with grouped navigation categories, active status indicators, disciple profile badge, weekly streak counter, and collapse control.
+- **Desktop/Tablet Collapsed (80px)**: Compact icon-only rail with floating tooltips, active badges, and smooth transition.
+- **Mobile (< 768px)**: Compact mobile top header with hamburger toggle, streak badge, and an iOS-style slide-in navigation drawer with rounded surfaces, touch targets >= 44px, and safe-area padding.
+
+### Grouped Navigation Hierarchy
+
+```text
+Disciple Portal
+├── Core & Discipleship
+│   ├── Overview / Dashboard (/student/dashboard)
+│   ├── Growth Roadmap (/student/journey)
+│   └── Foundation & Orientation (/student/onboarding)
+├── Spiritual Disciplines
+│   ├── Scripture & Exegesis (/student/bible)
+│   ├── Upper Room Prayer (/student/prayer)
+│   └── Apostolic Teachings (/student/teachings)
+├── Gatherings & Faithfulness
+│   ├── Attendance & Streak (/student/attendance)
+│   └── Convocations & Gatherings (/student/events)
+└── Apostolic Community
+    ├── Community Feed (/student/community)
+    ├── Apostolic Q&A Desk (/student/questions)
+    └── Share Insight Cards (/student/share-cards)
 ```
-Home
-
-Materials
-
-Community
-
-Notifications
-
-Profile
-```
-
-No additional primary navigation should be introduced without strong justification.
 
 ---
 

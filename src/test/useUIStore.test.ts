@@ -11,6 +11,8 @@ describe('useUIStore Zustand Store', () => {
       activeAssignment: null,
       activeShareCardModal: false,
       isSearchOpen: false,
+      isSidebarCollapsed: false,
+      isMobileNavOpen: false,
     });
   });
 
@@ -22,6 +24,8 @@ describe('useUIStore Zustand Store', () => {
     expect(state.activeAssignment).toBeNull();
     expect(state.activeShareCardModal).toBe(false);
     expect(state.isSearchOpen).toBe(false);
+    expect(state.isSidebarCollapsed).toBe(false);
+    expect(state.isMobileNavOpen).toBe(false);
   });
 
   it('should toggle theme correctly', () => {
@@ -54,5 +58,23 @@ describe('useUIStore Zustand Store', () => {
 
     useUIStore.getState().setSearchOpen(false);
     expect(useUIStore.getState().isSearchOpen).toBe(false);
+  });
+
+  it('should manage sidebar collapse and expansion', () => {
+    expect(useUIStore.getState().isSidebarCollapsed).toBe(false);
+    useUIStore.getState().toggleSidebarCollapsed();
+    expect(useUIStore.getState().isSidebarCollapsed).toBe(true);
+
+    useUIStore.getState().setSidebarCollapsed(false);
+    expect(useUIStore.getState().isSidebarCollapsed).toBe(false);
+  });
+
+  it('should manage mobile navigation drawer state', () => {
+    expect(useUIStore.getState().isMobileNavOpen).toBe(false);
+    useUIStore.getState().toggleMobileNav();
+    expect(useUIStore.getState().isMobileNavOpen).toBe(true);
+
+    useUIStore.getState().setMobileNavOpen(false);
+    expect(useUIStore.getState().isMobileNavOpen).toBe(false);
   });
 });
