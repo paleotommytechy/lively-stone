@@ -1,6 +1,7 @@
 import React from 'react';
 import { useApp } from '../../../context/AppContext';
 import { Card } from '../../ui/Card';
+import { DailyScriptureCard } from './DailyScriptureCard';
 import { 
   Flame, 
   BookOpen, 
@@ -69,6 +70,9 @@ export const StudentDashboardView: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Official YouVersion Daily Scripture / Verse of the Day */}
+      <DailyScriptureCard />
 
       {/* Discipleship Progress Overview Widget */}
       <Card className="space-y-4">

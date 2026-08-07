@@ -274,20 +274,42 @@ Sharing should always preserve proper Scripture attribution.
 
 ---
 
-# Bible API
+# Bible API (YouVersion Platform Integration)
 
-The platform should support an external Bible API.
+The platform is integrated with the official **YouVersion Platform Bible API** (`v1`).
 
-Requirements:
+### Base URL & Authentication
 
-* Multiple translations
-* Verse lookup
-* Search
-* Metadata
-* Daily verse
-* Licensing compliance
+* **Base URL**: `https://api.youversion.com/v1`
+* **Authentication Header**: `X-YVP-App-Key: <APP_KEY>`
+* **Configuration**: Injected securely via `VITE_YVP_APP_KEY` / `YVP_APP_KEY` environment variables.
 
-The Bible provider should be replaceable without major application changes.
+### Endpoints Used
+
+* `GET /v1/verse_of_the_days/{day}`: Fetches the passage identifier (e.g., `JHN.3.16`, `JOS.1.9`) for the day of the year (1–366).
+* `GET /v1/bibles`: Retrieves authorized, licensed Bible versions (BSB, NIV, KJV, ESV, WEB, NLT).
+* `GET /v1/bibles/{bibleId}/books`: Retrieves canonical books with USFM codes.
+* `GET /v1/bibles/{bibleId}/passages/{passageId}?format=text`: Retrieves passage text and attribution.
+* `GET /v1/bibles/{bibleId}/books/{usfm}/chapters/{chapter}`: Fetches full chapter text.
+
+### Day of Year Calculation
+
+The application computes today's day-of-year ($1 \dots 366$) with exact leap year logic:
+* Non-leap years: 1 (Jan 1) to 365 (Dec 31)
+* Leap years: 1 (Jan 1), 60 (Feb 29), to 366 (Dec 31)
+
+### Caching Strategy
+
+* **React Query**: Verse of the Day is cached for 12 hours (`staleTime: 12h`, `gcTime: 24h`).
+* **Bible Versions & Books**: Cached for 24 hours.
+* **Passages & Chapters**: Cached for 24 hours.
+* **Resilience**: Automatic fallback to curated Scripture anchors if rate-limited or offline.
+
+### Licensing & Copyright Compliance
+
+* Bible translations are accessed dynamically via YouVersion Platform API.
+* No unauthorized copies of full Bible texts are stored in the database.
+* Attribution notices and copyright statements from YouVersion are preserved and displayed in the reader and daily scripture surfaces.
 
 ---
 

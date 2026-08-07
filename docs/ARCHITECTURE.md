@@ -88,26 +88,18 @@ Each module owns its components, hooks, services and types.
 ## Data Flow
 
 ```text
-UI
-
+UI (Student Overview / Bible Reader)
 ↓
-
-Hook
-
+Hook (useDailyScripture, useBibleVersions, useBibleChapter)
 ↓
-
-Service
-
+Service (YouVersionService, youversion.ts)
 ↓
-
-Supabase
-
+YouVersion Platform API (v1) / Supabase Data Layer
 ↓
-
-Database
+Database / Local Caching Layer
 ```
 
-Never query Supabase directly inside UI components.
+Never query Supabase or external APIs directly inside UI components. Always utilize the service & React Query hook layer with caching.
 
 ---
 
