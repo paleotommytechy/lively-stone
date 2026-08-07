@@ -12,7 +12,8 @@ interface AuthContextType {
   // Actions
   openAuthModal: (roleTarget?: UserRole) => void;
   closeAuthModal: () => void;
-  login: (email: string, role: UserRole, password?: string) => Promise<boolean>;
+  login: (email: string, role: UserRole, password?: string) => Promise<{ success: boolean; error?: string }>;
+  signUp: (email: string, password: string, fullName: string) => Promise<{ success: boolean; error?: string }>;
   signInWithGoogle: (role: UserRole) => Promise<boolean>;
   logout: () => void;
   checkServerPermission: (requiredRole: UserRole) => Promise<boolean>;
@@ -125,12 +126,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const closeAuthModal = () => setIsAuthModalOpen(false);
 
-  const login = async (email: string, userRole: UserRole, password?: string): Promise<boolean> => {
+  const login = async (email: string, userRole: UserRole, password?: string): Promise<{ success: boolean; error?: string }> => {
     setIsLoading(true);
     try {
       if (!password || password.trim().length === 0) {
-        console.warn('Password is required for login');
-        return false;
+        return { success: false, error: 'Password is required to sign in.' };
       }
 
       const signInRes = await supabase.auth.signInWithPassword({
@@ -139,10 +139,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
 
       if (signInRes.error || !signInRes.data.user) {
-        console.warn('Authentication failed:', signInRes.error?.message);
+        const errorMsg = signInRes.error?.message || 'Invalid email or password. Please verify your credentials.';
         setUser(null);
         setRole('public');
-        return false;
+        return { success: false, error: errorMsg };
       }
 
       const authUser = signInRes.data.user;
@@ -151,12 +151,43 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser({ ...profile, role: activeRole });
       setRole(activeRole);
       setIsAuthModalOpen(false);
-      return true;
-    } catch (err) {
+      return { success: true };
+    } catch (err: any) {
       console.error('Supabase Auth Login Exception:', err);
       setUser(null);
       setRole('public');
-      return false;
+      return { success: false, error: err?.message || 'An unexpected authentication error occurred.' };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const signUp = async (email: string, password: string, fullName: string): Promise<{ success: boolean; error?: string }> => {
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: fullName,
+            role: 'disciple',
+          },
+        },
+      });
+
+      if (error || !data.user) {
+        return { success: false, error: error?.message || 'Failed to create account. Please try again.' };
+      }
+
+      const profile = await fetchUserProfile(data.user.id, email);
+      setUser({ ...profile, full_name: fullName, role: 'student' });
+      setRole('student');
+      setIsAuthModalOpen(false);
+      return { success: true };
+    } catch (err: any) {
+      console.error('Supabase Sign Up Exception:', err);
+      return { success: false, error: err?.message || 'An unexpected registration error occurred.' };
     } finally {
       setIsLoading(false);
     }
@@ -229,6 +260,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         openAuthModal,
         closeAuthModal,
         login,
+        signUp,
         signInWithGoogle,
         logout,
         checkServerPermission,

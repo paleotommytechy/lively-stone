@@ -1,5 +1,5 @@
 -- ============================================================================
--- LIVELY STONES PLATFORM — UNIFIED PRODUCTION DATABASE SCHEMA
+-- LIVELY STONES PLATFORM — UNIFIED PRODUCTION DATABASE & AUTH SCHEMA
 -- Discipleship Platform Operating System
 -- Reference: DATABASE.md, PERMISSIONS.md, AUTHENTICATION.md
 -- ============================================================================
@@ -87,81 +87,68 @@ CREATE TABLE IF NOT EXISTS public.user_roles (
 ALTER TABLE public.roles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.user_roles ENABLE ROW LEVEL SECURITY;
 
--- 4. BIBLE SYSTEM TABLES
+-- 4. AUTOMATIC PROFILE CREATION TRIGGER ON AUTH SIGNUP
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO public.profiles (id, email, display_name, onboarding_completed, profile_completion_pct)
+    VALUES (
+        NEW.id,
+        NEW.email,
+        COALESCE(NEW.raw_user_meta_data->>'full_name', split_part(NEW.email, '@', 1)),
+        false,
+        20
+    )
+    ON CONFLICT (id) DO NOTHING;
+
+    INSERT INTO public.user_roles (user_id, role)
+    VALUES (NEW.id, 'disciple')
+    ON CONFLICT (user_id, role) DO NOTHING;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+    AFTER INSERT ON auth.users
+    FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- 5. RPC PERMISSION VERIFICATION FUNCTION
+CREATE OR REPLACE FUNCTION public.check_user_permission(required_role TEXT)
+RETURNS BOOLEAN AS $$
+DECLARE
+    user_has_role BOOLEAN := false;
+BEGIN
+    IF auth.uid() IS NULL THEN
+        RETURN false;
+    END IF;
+
+    IF required_role = 'public' OR required_role = 'visitor' THEN
+        RETURN true;
+    END IF;
+
+    SELECT EXISTS (
+        SELECT 1 FROM public.user_roles
+        WHERE user_id = auth.uid()
+          AND (
+            role::text = required_role
+            OR (required_role = 'student' AND role IN ('disciple', 'administrator', 'super_admin'))
+            OR (required_role = 'admin' AND role IN ('administrator', 'super_admin'))
+          )
+    ) INTO user_has_role;
+
+    RETURN user_has_role;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- 6. BIBLE & PRAYER TABLES
 CREATE TABLE IF NOT EXISTS public.bible_reading_plans (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     title TEXT NOT NULL,
     slug TEXT UNIQUE NOT NULL,
     description TEXT NOT NULL,
     duration_days INT NOT NULL,
-    created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
-CREATE TABLE IF NOT EXISTS public.user_bible_progress (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
-    plan_id UUID REFERENCES public.bible_reading_plans(id) ON DELETE CASCADE,
-    book TEXT NOT NULL,
-    chapter INT NOT NULL,
-    verse INT,
-    completed BOOLEAN DEFAULT true,
-    streak_days INT DEFAULT 1,
-    completed_at TIMESTAMPTZ DEFAULT NOW()
-);
-
-CREATE TABLE IF NOT EXISTS public.user_bible_highlights (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
-    book TEXT NOT NULL,
-    chapter INT NOT NULL,
-    verse TEXT NOT NULL,
-    color TEXT DEFAULT 'gold',
-    category TEXT DEFAULT 'Personal',
-    created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
-CREATE TABLE IF NOT EXISTS public.user_bible_notes (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
-    book TEXT NOT NULL,
-    chapter INT NOT NULL,
-    verse TEXT NOT NULL,
-    note_content TEXT NOT NULL,
-    tags TEXT[],
-    is_private BOOLEAN DEFAULT true,
-    created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
-CREATE TABLE IF NOT EXISTS public.user_bible_bookmarks (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
-    book TEXT NOT NULL,
-    chapter INT NOT NULL,
-    verse TEXT NOT NULL,
-    collection_name TEXT DEFAULT 'General',
-    created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
-ALTER TABLE public.bible_reading_plans ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.user_bible_progress ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.user_bible_highlights ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.user_bible_notes ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.user_bible_bookmarks ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "Public can view reading plans" ON public.bible_reading_plans FOR SELECT USING (true);
-CREATE POLICY "Users access own progress" ON public.user_bible_progress FOR ALL USING (auth.uid() = user_id);
-CREATE POLICY "Users access own highlights" ON public.user_bible_highlights FOR ALL USING (auth.uid() = user_id);
-CREATE POLICY "Users access own notes" ON public.user_bible_notes FOR ALL USING (auth.uid() = user_id);
-CREATE POLICY "Users access own bookmarks" ON public.user_bible_bookmarks FOR ALL USING (auth.uid() = user_id);
-
--- 5. PRAYER SYSTEM TABLES
-CREATE TABLE IF NOT EXISTS public.prayer_journal (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
-    title TEXT NOT NULL,
-    content TEXT NOT NULL,
-    scripture_ref TEXT,
-    tags TEXT[],
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -178,60 +165,10 @@ CREATE TABLE IF NOT EXISTS public.prayer_requests (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-ALTER TABLE public.prayer_journal ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.bible_reading_plans ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.prayer_requests ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Users access own prayer journal" ON public.prayer_journal FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "Public can view reading plans" ON public.bible_reading_plans FOR SELECT USING (true);
 CREATE POLICY "Prayer request access control" ON public.prayer_requests FOR ALL USING (
     auth.uid() = user_id OR privacy = 'community'
 );
-
--- 6. COMMUNITY & TEACHINGS
-CREATE TABLE IF NOT EXISTS public.teachings (
-    id TEXT PRIMARY KEY DEFAULT ('t-' || extract(epoch from now())::bigint::text),
-    title TEXT NOT NULL,
-    slug TEXT UNIQUE NOT NULL,
-    description TEXT NOT NULL,
-    summary TEXT NOT NULL,
-    speaker TEXT DEFAULT 'Saint Abraham Babatunde',
-    topic TEXT NOT NULL,
-    pillar TEXT NOT NULL,
-    duration TEXT DEFAULT '45 mins',
-    telegram_message_url TEXT,
-    audio_url TEXT,
-    video_url TEXT,
-    scriptures JSONB DEFAULT '[]'::jsonb,
-    key_points JSONB DEFAULT '[]'::jsonb,
-    read_count INT DEFAULT 1,
-    published_by UUID REFERENCES public.profiles(id),
-    created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
-CREATE TABLE IF NOT EXISTS public.community_posts (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    author_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
-    category TEXT NOT NULL,
-    content TEXT NOT NULL,
-    scripture_ref TEXT,
-    likes_count INT DEFAULT 0,
-    created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
-ALTER TABLE public.teachings ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.community_posts ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "Everyone view teachings" ON public.teachings FOR SELECT USING (true);
-CREATE POLICY "Authenticated view posts" ON public.community_posts FOR SELECT USING (auth.role() = 'authenticated');
-CREATE POLICY "Authors create posts" ON public.community_posts FOR INSERT WITH CHECK (auth.uid() = author_id);
-
--- 7. AUDIT LOGS
-CREATE TABLE IF NOT EXISTS public.audit_logs (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    actor_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
-    action TEXT NOT NULL,
-    target_entity TEXT NOT NULL,
-    details JSONB DEFAULT '{}'::jsonb,
-    created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
-ALTER TABLE public.audit_logs ENABLE ROW LEVEL SECURITY;

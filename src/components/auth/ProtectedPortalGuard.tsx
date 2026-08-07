@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuth } from '../../context/AuthContext';
 import { useApp } from '../../context/AppContext';
-import { Mail, Lock, ArrowRight, Shield, Sparkles, CheckSquare, Square, Eye, EyeOff, X } from 'lucide-react';
+import { Mail, Lock, ArrowRight, Shield, Sparkles, CheckSquare, Square, Eye, EyeOff, X, AlertCircle } from 'lucide-react';
 import { MinistryCrestSVG } from '../vectors/MinistryVectors';
 
 const loginSchema = z.object({
@@ -104,16 +104,21 @@ export const ProtectedPortalGuard: React.FC<ProtectedPortalGuardProps> = ({ requ
     setIsSubmitting(false);
   };
 
+  const [authError, setAuthError] = useState<string | null>(null);
+
   const onAuthorizeSubmit = async (data: LoginFields) => {
     setIsSubmitting(true);
-    const success = await login(data.email, requiredRole, data.password);
+    setAuthError(null);
+    const res = await login(data.email, requiredRole, data.password);
 
-    if (success) {
+    if (res.success) {
       setRoleView(requiredRole);
       showToast('Portal Authorization Granted', `Authenticated as authorized ${requiredRole.toUpperCase()} user.`);
       setHasPermission(true);
     } else {
-      showToast('Authentication Error', 'Invalid credentials or missing role permissions.');
+      const errorMsg = res.error || 'Invalid email or password. Please verify your credentials.';
+      setAuthError(errorMsg);
+      showToast('Authentication Error', errorMsg, 'warning');
     }
     setIsSubmitting(false);
   };
@@ -188,6 +193,24 @@ export const ProtectedPortalGuard: React.FC<ProtectedPortalGuardProps> = ({ requ
 
           {/* Credentials Form */}
           <form onSubmit={handleSubmit(onAuthorizeSubmit)} className="space-y-3.5 text-left relative z-10">
+            {/* Inline Error Alert Banner */}
+            {authError && (
+              <div className="p-3 rounded-2xl bg-red-950/80 border border-red-500/40 text-red-200 text-xs flex items-start gap-2.5 shadow-lg animate-ios-fade-in">
+                <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+                <div className="flex-1 font-medium leading-relaxed">
+                  <span className="font-bold block text-red-300">Authentication Failed</span>
+                  {authError}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setAuthError(null)}
+                  className="text-red-400 hover:text-white p-0.5"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
+
             {/* Email Field */}
             <div className="space-y-1">
               <label className="text-[11px] font-semibold text-slate-300 block">

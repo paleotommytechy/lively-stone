@@ -94,7 +94,7 @@ interface AppContextType {
   createShareCard: (newCard: Omit<ShareCard, 'id' | 'downloadsCount' | 'approved'>) => void;
   incrementShareCardDownload: (id: string) => void;
 
-  showToast: (title: string, message: string) => void;
+  showToast: (title: string, message: string, type?: 'success' | 'info' | 'warning') => void;
   hideToast: () => void;
 }
 
@@ -257,8 +257,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   }, [location]);
 
-  const showToast = (title: string, message: string) => {
-    useUIStore.getState().showToast(title, message);
+  const showToast = (title: string, message: string, type: 'success' | 'info' | 'warning' = 'info') => {
+    useUIStore.getState().showToast(title, message, type);
   };
 
   const hideToast = () => useUIStore.getState().hideToast();

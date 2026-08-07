@@ -29,7 +29,7 @@ export const Header: React.FC = () => {
     showToast 
   } = useApp();
   
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, role, isAuthenticated, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
@@ -157,12 +157,14 @@ export const Header: React.FC = () => {
             </button>
           ) : (
             <div className="flex items-center gap-2">
-              <button
-                onClick={() => setRoleView(roleView === 'admin' ? 'student' : 'admin')}
-                className="px-3 py-1.5 rounded-xl border border-slate-300 dark:border-forest-700 text-xs font-extrabold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-forest-900 transition-colors hidden sm:block"
-              >
-                Switch to {roleView === 'admin' ? 'Disciple' : 'Admin'}
-              </button>
+              {(role === 'admin' || user?.role === 'admin') && (
+                <button
+                  onClick={() => setRoleView(roleView === 'admin' ? 'student' : 'admin')}
+                  className="px-3 py-1.5 rounded-xl border border-slate-300 dark:border-forest-700 text-xs font-extrabold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-forest-900 transition-colors hidden sm:block"
+                >
+                  Switch to {roleView === 'admin' ? 'Disciple' : 'Admin'}
+                </button>
+              )}
 
               <button
                 onClick={logout}
@@ -199,12 +201,14 @@ export const Header: React.FC = () => {
           >
             Disciple Portal
           </button>
-          <button 
-            onClick={() => { setRoleView('admin'); setAdminRoute('overview'); setMobileMenuOpen(false); }}
-            className="w-full text-left px-4 py-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-forest-900 text-gold-500"
-          >
-            Admin Portal
-          </button>
+          {(role === 'admin' || user?.role === 'admin') && (
+            <button 
+              onClick={() => { setRoleView('admin'); setAdminRoute('overview'); setMobileMenuOpen(false); }}
+              className="w-full text-left px-4 py-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-forest-900 text-gold-500"
+            >
+              Admin Portal
+            </button>
+          )}
         </div>
       )}
     </header>
