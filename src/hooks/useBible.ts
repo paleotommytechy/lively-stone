@@ -102,7 +102,7 @@ export const useBibleChapter = (bibleId: string, bookUsfm: string, chapter: numb
  */
 export const useDailyScripture = () => {
   const [preferredBibleId, setPreferredBibleIdState] = useState<string>(() => {
-    return localStorage.getItem(STORAGE_KEY_PREFERRED_BIBLE) || '3034'; // Default to BSB / NIV
+    return localStorage.getItem(STORAGE_KEY_PREFERRED_BIBLE) || '111'; // Default to NIV (111)
   });
 
   const setPreferredBibleId = (id: string) => {
@@ -119,7 +119,7 @@ export const useDailyScripture = () => {
     data: passage, 
     isLoading: isPassageLoading, 
     isError: isPassageError, 
-    error: passageError,
+    error: passageError, 
     refetch: refetchPassage 
   } = useBiblePassage(preferredBibleId, activePassageId, !!activePassageId);
 
@@ -159,7 +159,7 @@ export const useDailyScripture = () => {
  */
 export const useBibleReaderState = () => {
   const [selectedBibleId, setSelectedBibleId] = useState<string>(() => {
-    return localStorage.getItem(STORAGE_KEY_PREFERRED_BIBLE) || '3034';
+    return localStorage.getItem(STORAGE_KEY_PREFERRED_BIBLE) || '111';
   });
 
   const [selectedBook, setSelectedBook] = useState<string>(() => {

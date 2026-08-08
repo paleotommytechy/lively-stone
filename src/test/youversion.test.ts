@@ -109,20 +109,53 @@ describe('YouVersion Service & Scripture Utilities', () => {
       expect(votd.passage_id).toBeTruthy();
     });
 
-    it('returns licensed Bible versions', async () => {
+    it('returns licensed Bible versions including all 8 supported versions', async () => {
       const versions = await YouVersionService.getBibleVersions();
-      expect(versions.length).toBeGreaterThanOrEqual(1);
-      expect(versions.some(v => v.abbreviation === 'BSB' || v.abbreviation === 'NIV')).toBe(true);
-    });
+      expect(versions.length).toBeGreaterThanOrEqual(8);
+      
+      const requiredVersions = ['NIV', 'KJV', 'NLT', 'MSG', 'AMP', 'AMPC', 'ESV', 'NKJV'];
+      requiredVersions.forEach(abbr => {
+        const found = versions.find(v => v.abbreviation === abbr);
+        expect(found, `Expected ${abbr} to be in supported versions`).toBeDefined();
+      });
 
-    it('retrieves chapter verses cleanly', async () => {
-      const chapter = await YouVersionService.getBibleChapter('3034', 'JHN', 1);
-      expect(chapter.book).toBe('John');
-      expect(chapter.chapter).toBe(1);
-      expect(chapter.verses.length).toBeGreaterThan(0);
-      expect(chapter.verses[0].verse).toBe(1);
-      expect(chapter.verses[0].text).toContain('beginning');
-    });
+      // Verify specific YouVersion Bible ID mappings
+      expect(versions.find(v => v.abbreviation === 'NIV')?.id).toBe('111');
+      expect(versions.find(v => v.abbreviation === 'KJV')?.id).toBe('1');
+      expect(versions.find(v => v.abbreviation === 'NLT')?.id).toBe('116');
+      expect(versions.find(v => v.abbreviation === 'MSG')?.id).toBe('97');
+      expect(versions.find(v => v.abbreviation === 'AMP')?.id).toBe('1588');
+      expect(versions.find(v => v.abbreviation === 'AMPC')?.id).toBe('8');
+      expect(versions.find(v => v.abbreviation === 'ESV')?.id).toBe('59');
+      expect(versions.find(v => v.abbreviation === 'NKJV')?.id).toBe('114');
+    }, 15000);
+
+    it('retrieves chapter verses cleanly and includes version attribution', async () => {
+      const chapterNiv = await YouVersionService.getBibleChapter('111', 'JHN', 1);
+      expect(chapterNiv.book).toBe('John');
+      expect(chapterNiv.chapter).toBe(1);
+      expect(chapterNiv.verses.length).toBeGreaterThan(0);
+      expect(chapterNiv.verses[0].verse).toBe(1);
+      expect(chapterNiv.verses[0].text).toContain('beginning');
+      expect(chapterNiv.version).toBe('NIV');
+
+      const chapterEsv = await YouVersionService.getBibleChapter('59', 'JHN', 1);
+      expect(chapterEsv.version).toBe('ESV');
+      expect(chapterEsv.verses.length).toBeGreaterThan(0);
+
+      const chapterKjv = await YouVersionService.getBibleChapter('1', 'JHN', 1);
+      expect(chapterKjv.version).toBe('KJV');
+      expect(chapterKjv.verses.length).toBeGreaterThan(0);
+    }, 20000);
+
+    it('retrieves passages with correct version abbreviations', async () => {
+      const passageNiv = await YouVersionService.getBiblePassage('111', 'JHN.3.16');
+      expect(passageNiv.version).toBe('NIV');
+      expect(passageNiv.reference).toBe('John 3:16');
+
+      const passageEsv = await YouVersionService.getBiblePassage('59', 'JHN.3.16');
+      expect(passageEsv.version).toBe('ESV');
+    }, 15000);
   });
 
 });

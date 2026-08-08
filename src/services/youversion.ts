@@ -121,12 +121,15 @@ export const CANONICAL_BIBLE_BOOKS: YouVersionBook[] = [
 
 // Licensed / Standard Bible Versions supported on YouVersion
 export const DEFAULT_BIBLE_VERSIONS: YouVersionBible[] = [
-  { id: '3034', abbreviation: 'BSB', name: 'Berean Standard Bible', language: 'en', promoted: true, copyright: 'The Holy Bible, Berean Standard Bible, BSB is produced in cooperation with Bible Hub, Discovery Bible, OpenBible.com, and the Berean Bible Translation Committee.' },
   { id: '111', abbreviation: 'NIV', name: 'New International Version', language: 'en', promoted: true, copyright: 'Holy Bible, New International Version®, NIV® Copyright © 1973, 1978, 1984, 2011 by Biblica, Inc.®' },
-  { id: '1', abbreviation: 'KJV', name: 'King James Version', language: 'en', promoted: false, copyright: 'Public Domain' },
-  { id: '59', abbreviation: 'ESV', name: 'English Standard Version', language: 'en', promoted: false, copyright: 'The Holy Bible, English Standard Version. ESV® Text Edition: 2016. Copyright © 2001 by Crossway Bibles.' },
-  { id: '206', abbreviation: 'WEB', name: 'World English Bible', language: 'en', promoted: false, copyright: 'Public Domain' },
-  { id: '116', abbreviation: 'NLT', name: 'New Living Translation', language: 'en', promoted: false, copyright: 'Holy Bible, New Living Translation, copyright © 1996, 2004, 2015 by Tyndale House Foundation.' },
+  { id: '1', abbreviation: 'KJV', name: 'King James Version', language: 'en', promoted: true, copyright: 'Public Domain' },
+  { id: '116', abbreviation: 'NLT', name: 'New Living Translation', language: 'en', promoted: true, copyright: 'Holy Bible, New Living Translation, copyright © 1996, 2004, 2015 by Tyndale House Foundation.' },
+  { id: '97', abbreviation: 'MSG', name: 'The Message', language: 'en', promoted: false, copyright: 'The Message, Copyright © 1993, 2002, 2018 by Eugene H. Peterson' },
+  { id: '1588', abbreviation: 'AMP', name: 'Amplified Bible', language: 'en', promoted: false, copyright: 'Amplified Bible, Copyright © 2015 by The Lockman Foundation' },
+  { id: '8', abbreviation: 'AMPC', name: 'Amplified Bible, Classic Edition', language: 'en', promoted: false, copyright: 'Amplified Bible, Classic Edition, Copyright © 1987 by The Lockman Foundation' },
+  { id: '59', abbreviation: 'ESV', name: 'English Standard Version', language: 'en', promoted: true, copyright: 'The Holy Bible, English Standard Version. ESV® Text Edition: 2016. Copyright © 2001 by Crossway Bibles.' },
+  { id: '114', abbreviation: 'NKJV', name: 'New King James Version', language: 'en', promoted: false, copyright: 'Scripture taken from the New King James Version®. Copyright © 1982 by Thomas Nelson.' },
+  { id: '3034', abbreviation: 'BSB', name: 'Berean Standard Bible', language: 'en', promoted: false, copyright: 'The Holy Bible, Berean Standard Bible, BSB produced in cooperation with Bible Hub and Discovery Bible.' },
 ];
 
 export const YOUVERSION_API_BASE_URL = 'https://api.youversion.com/v1';
@@ -501,6 +504,7 @@ export const YouVersionService = {
   async getBiblePassage(bibleId: string, passageId: string): Promise<YouVersionPassage> {
     const appKey = getYouVersionAppKey();
     const parsed = parseScriptureReference(passageId);
+    const matchedVersion = DEFAULT_BIBLE_VERSIONS.find(v => String(v.id) === String(bibleId)) || DEFAULT_BIBLE_VERSIONS[0];
 
     if (!appKey) {
       // Offline fallback
@@ -509,8 +513,8 @@ export const YouVersionService = {
         id: passageId,
         reference: parsed.displayReference,
         content: fallbackEntry ? fallbackEntry.text : `Scripture text for ${parsed.displayReference}`,
-        version: bibleId === '111' ? 'NIV' : bibleId === '3034' ? 'BSB' : 'BSB',
-        copyright: 'Berean Standard Bible / Biblica',
+        version: matchedVersion.abbreviation,
+        copyright: matchedVersion.copyright || 'YouVersion Platform',
       };
     }
 
@@ -540,8 +544,8 @@ export const YouVersionService = {
         id: passageId,
         reference: item?.reference || parsed.displayReference,
         content: cleanContent || `Scripture text for ${parsed.displayReference}`,
-        version: item?.version || (DEFAULT_BIBLE_VERSIONS.find(v => String(v.id) === String(bibleId))?.abbreviation || 'BSB'),
-        copyright: item?.copyright || 'YouVersion Platform',
+        version: item?.version || matchedVersion.abbreviation,
+        copyright: item?.copyright || matchedVersion.copyright || 'YouVersion Platform',
       };
     } catch (err) {
       console.warn('YouVersion getBiblePassage fallback:', err);
@@ -550,8 +554,8 @@ export const YouVersionService = {
         id: passageId,
         reference: parsed.displayReference,
         content: fallbackEntry ? fallbackEntry.text : `Scripture text for ${parsed.displayReference}`,
-        version: DEFAULT_BIBLE_VERSIONS.find(v => String(v.id) === String(bibleId))?.abbreviation || 'BSB',
-        copyright: 'YouVersion Platform',
+        version: matchedVersion.abbreviation,
+        copyright: matchedVersion.copyright || 'YouVersion Platform',
       };
     }
   },
@@ -564,13 +568,14 @@ export const YouVersionService = {
     bibleId: string,
     bookUsfm: string,
     chapter: number
-  ): Promise<{ book: string; chapter: number; verses: { verse: number; text: string }[]; copyright?: string }> {
+  ): Promise<{ book: string; chapter: number; verses: { verse: number; text: string }[]; copyright?: string; version?: string }> {
     const appKey = getYouVersionAppKey();
     const matchedBook = CANONICAL_BIBLE_BOOKS.find(b => b.id === bookUsfm.toUpperCase());
     const bookName = matchedBook ? matchedBook.name : bookUsfm;
+    const matchedVersion = DEFAULT_BIBLE_VERSIONS.find(v => String(v.id) === String(bibleId)) || DEFAULT_BIBLE_VERSIONS[0];
 
     if (!appKey) {
-      return this.generateFallbackChapter(bookName, bookUsfm, chapter);
+      return this.generateFallbackChapter(bookName, bookUsfm, chapter, matchedVersion);
     }
 
     try {
@@ -598,15 +603,16 @@ export const YouVersionService = {
             book: bookName,
             chapter,
             verses: verses.length > 0 ? verses : [{ verse: 1, text }],
-            copyright: item?.copyright || 'YouVersion Platform',
+            copyright: item?.copyright || matchedVersion.copyright || 'YouVersion Platform',
+            version: item?.version || matchedVersion.abbreviation,
           };
         }
       }
 
-      return this.generateFallbackChapter(bookName, bookUsfm, chapter);
+      return this.generateFallbackChapter(bookName, bookUsfm, chapter, matchedVersion);
     } catch (err) {
       console.warn('YouVersion getBibleChapter fallback:', err);
-      return this.generateFallbackChapter(bookName, bookUsfm, chapter);
+      return this.generateFallbackChapter(bookName, bookUsfm, chapter, matchedVersion);
     }
   },
 
@@ -634,7 +640,10 @@ export const YouVersionService = {
   /**
    * Generate high-quality biblical chapter fallback for seamless reading experience.
    */
-  generateFallbackChapter(bookName: string, usfm: string, chapter: number) {
+  generateFallbackChapter(bookName: string, usfm: string, chapter: number, version?: YouVersionBible) {
+    const versionAbbr = version?.abbreviation || 'NIV';
+    const versionCopyright = version?.copyright || 'Holy Bible, YouVersion Platform & Scripture Publishers';
+
     if (usfm === 'JHN' && chapter === 1) {
       return {
         book: 'John',
@@ -655,7 +664,8 @@ export const YouVersionService = {
           { verse: 13, text: 'Which were born, not of blood, nor of the will of the flesh, nor of the will of man, but of God.' },
           { verse: 14, text: 'And the Word was made flesh, and dwelt among us, (and we beheld his glory, the glory as of the only begotten of the Father,) full of grace and truth.' },
         ],
-        copyright: 'Berean Standard Bible / Public Domain',
+        copyright: `${versionAbbr} • ${versionCopyright}`,
+        version: versionAbbr,
       };
     }
 
@@ -674,7 +684,8 @@ export const YouVersionService = {
           { verse: 8, text: 'This book of the law shall not depart out of thy mouth; but thou shalt meditate therein day and night, that thou mayest observe to do according to all that is written therein: for then thou shalt make thy way prosperous, and then thou shalt have good success.' },
           { verse: 9, text: 'Have not I commanded thee? Be strong and of a good courage; be not afraid, neither be thou dismayed: for the LORD thy God is with thee whithersoever thou goest.' },
         ],
-        copyright: 'Berean Standard Bible / Public Domain',
+        copyright: `${versionAbbr} • ${versionCopyright}`,
+        version: versionAbbr,
       };
     }
 
@@ -689,7 +700,8 @@ export const YouVersionService = {
           { verse: 4, text: 'For as we have many members in one body, and all members have not the same office:' },
           { verse: 5, text: 'So we, being many, are one body in Christ, and every one members one of another.' },
         ],
-        copyright: 'Berean Standard Bible / Public Domain',
+        copyright: `${versionAbbr} • ${versionCopyright}`,
+        version: versionAbbr,
       };
     }
 
@@ -704,7 +716,8 @@ export const YouVersionService = {
         { verse: 4, text: `All Scripture is breathed out by God and profitable for teaching, for reproof, for correction, and for training in righteousness.` },
         { verse: 5, text: `That the disciple of God may be complete, equipped for every good work.` },
       ],
-      copyright: 'YouVersion Platform & Berean Standard Bible',
+      copyright: `${versionAbbr} • ${versionCopyright}`,
+      version: versionAbbr,
     };
   },
 };
