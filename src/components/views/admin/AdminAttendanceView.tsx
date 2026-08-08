@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useApp } from '../../../context/AppContext';
 import { Card } from '../../ui/Card';
+import { Avatar } from '../../ui/Avatar';
 import { IOSModal } from '../../ios/IOSModal';
 import { 
   CheckCircle2, 
@@ -302,10 +303,11 @@ export const AdminAttendanceView: React.FC = () => {
                 <tr key={std.id} className="hover:bg-slate-50 dark:hover:bg-forest-900/40">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      <img 
+                      <Avatar 
                         src={std.avatarUrl} 
-                        alt={std.name}
-                        className="w-8 h-8 rounded-full object-cover shrink-0 ring-1 ring-gold-400/40"
+                        name={std.name}
+                        size="sm"
+                        className="ring-1 ring-gold-400/40"
                       />
                       <div>
                         <p className="font-bold text-slate-900 dark:text-white">{std.name}</p>

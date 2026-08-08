@@ -47,5 +47,20 @@ export const allStudentsList: StudentProfile[] = [
     assignmentsSubmitted: 8,
     attendanceRate: 84,
     joinDate: 'February 2026',
+  },
+  {
+    id: 'std-774',
+    name: 'Grace Smith',
+    email: 'grace@livelystones.org',
+    location: 'Ibadan, Nigeria',
+    avatarUrl: '',
+    currentPillar: 'Learn',
+    progressPercentage: 15,
+    weeklyStreak: 2,
+    totalTeachingsCompleted: 4,
+    quizzesCompleted: 3,
+    assignmentsSubmitted: 2,
+    attendanceRate: 88,
+    joinDate: 'March 2026',
   }
 ];

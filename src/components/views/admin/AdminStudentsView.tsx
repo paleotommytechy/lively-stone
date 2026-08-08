@@ -1,6 +1,7 @@
 import React from 'react';
 import { useApp } from '../../../context/AppContext';
 import { IOSCard } from '../../ios/IOSCard';
+import { Avatar } from '../../ui/Avatar';
 import { Users, Award, Flame, CheckCircle2 } from 'lucide-react';
 
 export const AdminStudentsView: React.FC = () => {
@@ -22,10 +23,11 @@ export const AdminStudentsView: React.FC = () => {
           <IOSCard key={std.id} className="p-5">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
-                <img 
+                <Avatar 
                   src={std.avatarUrl} 
-                  alt={std.name} 
-                  className="w-12 h-12 rounded-full object-cover ring-2 ring-blue-500/40"
+                  name={std.name} 
+                  size="lg"
+                  className="ring-2 ring-blue-500/40"
                 />
                 <div className="space-y-1">
                   <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">

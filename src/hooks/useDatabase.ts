@@ -60,7 +60,7 @@ export const useStudentProfiles = () => {
         name: sp.full_name || 'Disciple',
         email: sp.email,
         location: sp.location || 'Lagos, Nigeria',
-        avatarUrl: sp.avatar_url || '/ifeoluwa.png',
+        avatarUrl: sp.avatar_url || '',
         currentPillar: sp.current_pillar || 'Grow',
         progressPercentage: sp.progress_percentage || 0,
         weeklyStreak: sp.weekly_streak || 1,
@@ -92,7 +92,7 @@ export const useCommunityPosts = () => {
       return data.map((p: any) => ({
         id: p.id,
         authorName: p.author_name,
-        authorAvatar: p.author_avatar || '/ifeoluwa.png',
+        authorAvatar: p.author_avatar || '',
         authorRole: 'Student Disciple',
         category: p.category,
         content: p.content,

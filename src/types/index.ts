@@ -120,6 +120,8 @@ export interface StudentProfile {
   assignmentsSubmitted: number;
   attendanceRate: number;
   joinDate: string;
+  onboardingCompleted?: boolean;
+  profileCompletionPct?: number;
 }
 
 export interface AttendanceSession {

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useUIStore } from '../../../store/useUIStore';
 import { useGlobalSearch } from '../../../hooks/useGlobalSearch';
 import { useNavigate } from 'react-router-dom';
+import { Avatar } from '../../ui/Avatar';
 import { Search, X, BookOpen, MessageSquare, Calendar, HelpCircle, Users, ArrowRight } from 'lucide-react';
 
 export const GlobalSearchModal: React.FC = () => {
@@ -225,7 +226,7 @@ export const GlobalSearchModal: React.FC = () => {
                         className="p-3 rounded-2xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 hover:border-white/10 cursor-pointer transition-all flex items-center justify-between gap-3 group"
                       >
                         <div className="flex items-center gap-3">
-                          <img src={s.avatarUrl} alt="Avatar" className="w-6 h-6 rounded-full object-cover" />
+                          <Avatar src={s.avatarUrl} name={s.name} size="xs" />
                           <div>
                             <p className="text-xs font-bold text-slate-100 group-hover:text-emerald-400 transition-colors">
                               {s.name}

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useApp } from '../../../context/AppContext';
 import { IOSCard } from '../../ios/IOSCard';
 import { IOSModal } from '../../ios/IOSModal';
+import { Avatar } from '../../ui/Avatar';
 import { HelpCircle, ThumbsUp, Plus, Search, CheckCircle2, ShieldCheck } from 'lucide-react';
 
 export const QuestionsView: React.FC = () => {
@@ -67,10 +68,11 @@ export const QuestionsView: React.FC = () => {
           <IOSCard key={q.id} className="space-y-4">
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">
-                <img 
+                <Avatar 
                   src={q.studentAvatar} 
-                  alt={q.studentName} 
-                  className="w-9 h-9 rounded-full object-cover ring-2 ring-blue-500/40"
+                  name={q.studentName} 
+                  size="sm"
+                  className="w-9 h-9 ring-2 ring-blue-500/40"
                 />
                 <div>
                   <h3 className="text-xs font-bold text-slate-900 dark:text-white">

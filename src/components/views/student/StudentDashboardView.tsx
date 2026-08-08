@@ -1,6 +1,7 @@
 import React from 'react';
 import { useApp } from '../../../context/AppContext';
 import { Card } from '../../ui/Card';
+import { Avatar } from '../../ui/Avatar';
 import { DailyScriptureCard } from './DailyScriptureCard';
 import { 
   Flame, 
@@ -39,10 +40,11 @@ export const StudentDashboardView: React.FC = () => {
       <div className="relative overflow-hidden rounded-3xl bg-forest-950 text-white p-6 sm:p-10 border border-forest-800 shadow-2xl">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
           <div className="flex items-center gap-4">
-            <img 
+            <Avatar 
               src={student.avatarUrl} 
-              alt={student.name}
-              className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover shrink-0 ring-4 ring-gold-400/60 shadow-xl"
+              name={student.name}
+              size="xl"
+              className="ring-4 ring-gold-400/60 shadow-xl"
             />
             <div className="space-y-1">
               <span className="px-3.5 py-1 rounded-full bg-forest-900 text-gold-400 text-xs font-mono font-bold border border-forest-700 inline-flex items-center gap-1.5">

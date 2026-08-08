@@ -22,5 +22,17 @@ export interface UserProfile {
   role: UserRole;
   avatar_url?: string;
   current_pillar?: string;
+  onboarding_completed?: boolean;
+  profile_completion_pct?: number;
+  biography?: string;
+  phone?: string;
+  gender?: string;
+  date_of_birth?: string;
+  country?: string;
+  state?: string;
+  city?: string;
+  location?: string;
+  occupation?: string;
+  fellowship?: string;
   created_at?: string;
 }

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useApp } from '../../../context/AppContext';
 import { IOSCard } from '../../ios/IOSCard';
 import { IOSModal } from '../../ios/IOSModal';
+import { Avatar } from '../../ui/Avatar';
 import { Heart, MessageSquare, Plus, Sparkles, Send, BookOpen, Filter } from 'lucide-react';
 import { CommunityPost } from '../../../types';
 
@@ -100,10 +101,11 @@ export const CommunityView: React.FC = () => {
             {/* Author Header */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <img 
+                <Avatar 
                   src={post.authorAvatar} 
-                  alt={post.authorName} 
-                  className="w-10 h-10 rounded-full object-cover ring-2 ring-blue-500/40"
+                  name={post.authorName} 
+                  size="md"
+                  className="ring-2 ring-blue-500/40"
                 />
                 <div>
                   <h4 className="text-sm font-bold text-slate-900 dark:text-white">

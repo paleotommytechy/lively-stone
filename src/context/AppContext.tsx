@@ -118,6 +118,7 @@ interface AppContextType {
   generateIcsCalendarFile: (event: MinistryEvent) => void;
   generateGoogleCalendarUrl: (event: MinistryEvent) => string;
 
+  updateStudentProfile: (updates: Partial<StudentProfile>) => void;
   showToast: (title: string, message: string, type?: 'success' | 'info' | 'warning') => void;
   hideToast: () => void;
 }
@@ -917,6 +918,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}`;
   };
 
+  const updateStudentProfile = (updates: Partial<StudentProfile>) => {
+    setStudent(prev => ({
+      ...prev,
+      ...updates,
+    }));
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -983,6 +991,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         generateIcsCalendarFile,
         generateGoogleCalendarUrl,
 
+        updateStudentProfile,
         showToast,
         hideToast,
       }}

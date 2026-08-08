@@ -25,6 +25,7 @@ import {
   ArrowRightLeft
 } from 'lucide-react';
 import { MinistryCrestSVG } from '../vectors/MinistryVectors';
+import { Avatar } from '../ui/Avatar';
 import { StudentRoute } from '../../types';
 
 interface NavItem {
@@ -384,14 +385,13 @@ export const StudentSidebar: React.FC = () => {
             <div className="space-y-3">
               {/* Disciple Profile Card */}
               <div className="p-3 rounded-2xl bg-forest-900/80 border border-forest-800 flex items-center gap-3">
-                <div className="relative shrink-0">
-                  <img
-                    src={student.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'}
-                    alt={student.name}
-                    className="w-10 h-10 rounded-full object-cover ring-2 ring-gold-400/60"
-                  />
-                  <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-400 border-2 border-forest-950" />
-                </div>
+                <Avatar
+                  src={student.avatarUrl}
+                  name={student.name}
+                  size="md"
+                  status="online"
+                  className="ring-2 ring-gold-400/60"
+                />
 
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-bold text-white truncate">
@@ -443,16 +443,17 @@ export const StudentSidebar: React.FC = () => {
           ) : (
             <div className="flex flex-col items-center gap-2">
               <div 
-                className="relative cursor-pointer group"
+                className="cursor-pointer group"
                 onClick={() => navigate('/student/journey')}
                 title={`${student.name} • ${student.currentPillar}`}
               >
-                <img
-                  src={student.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'}
-                  alt={student.name}
-                  className="w-9 h-9 rounded-full object-cover ring-2 ring-gold-400/60 group-hover:scale-105 transition-transform"
+                <Avatar
+                  src={student.avatarUrl}
+                  name={student.name}
+                  size="sm"
+                  status="online"
+                  className="w-9 h-9 ring-2 ring-gold-400/60 group-hover:scale-105 transition-transform"
                 />
-                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-forest-950" />
               </div>
 
               <button
@@ -542,10 +543,12 @@ export const StudentSidebar: React.FC = () => {
             {/* Disciple Profile Quick Summary Card */}
             <div className="p-4 bg-forest-900/60 border-b border-forest-800/80">
               <div className="flex items-center gap-3">
-                <img
-                  src={student.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'}
-                  alt={student.name}
-                  className="w-11 h-11 rounded-full object-cover ring-2 ring-gold-400/60 shrink-0"
+                <Avatar
+                  src={student.avatarUrl}
+                  name={student.name}
+                  size="md"
+                  status="online"
+                  className="w-11 h-11 ring-2 ring-gold-400/60 shrink-0"
                 />
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-bold text-white truncate">

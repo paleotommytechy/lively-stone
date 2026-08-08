@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation, Navigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -47,8 +48,9 @@ const AppleIcon = () => (
 );
 
 export const ProtectedPortalGuard: React.FC<ProtectedPortalGuardProps> = ({ requiredRole, children }) => {
-  const { role, login, signInWithGoogle, checkServerPermission } = useAuth() as any;
+  const { user, role, login, signInWithGoogle, checkServerPermission } = useAuth() as any;
   const { setRoleView, setPublicRoute, showToast } = useApp();
+  const location = useLocation();
 
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -314,6 +316,24 @@ export const ProtectedPortalGuard: React.FC<ProtectedPortalGuardProps> = ({ requ
 
       </div>
     );
+  }
+
+  // Authenticated user checks & onboarding gate
+  if (requiredRole === 'student') {
+    const isOnboardingRoute = location.pathname === '/student/onboarding';
+    const hasCompletedOnboarding = user?.onboarding_completed === true;
+
+    // Student has not completed required profile onboarding -> redirect to onboarding setup page
+    if (!hasCompletedOnboarding) {
+      if (!isOnboardingRoute) {
+        return <Navigate to="/student/onboarding" replace />;
+      }
+    } else {
+      // Student has already completed onboarding -> prevent staying on setup page
+      if (isOnboardingRoute) {
+        return <Navigate to="/student/dashboard" replace />;
+      }
+    }
   }
 
   return <>{children}</>;
